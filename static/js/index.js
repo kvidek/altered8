@@ -1,5 +1,5 @@
 import NavigationController from "./components/NavigationController";
-import Dummy from "./components/Dummy";
+import Background from "./components/Background";
 
 function ready(callbackFunc) {
     if (document.readyState !== "loading") {
@@ -28,8 +28,8 @@ function ready(callbackFunc) {
  * Document ready callback
  */
 ready(function() {
-    const dummy = new Dummy();
-    dummy.init();
+    const background = new Background();
+    background.init();
 
     const navigation = new NavigationController();
     navigation.init();

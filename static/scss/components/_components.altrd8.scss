@@ -1,0 +1,17 @@
+//ALTRD8
+.c-altrd8 {
+    width: 940/20 * 1vw;
+
+    @include mq(sm) {
+        width: 940/3.25 * 1px;
+    }
+
+    //overrides
+    .c-logo {
+        margin-bottom: 10px;
+    }
+
+    .u-b0 {
+        max-width: 240px;
+    }
+}

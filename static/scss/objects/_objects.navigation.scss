@@ -3,7 +3,6 @@
     top: 0;
     left: 0;
     width: 100%;
-    background-color: $white;
     padding: 20px 0;
     z-index: getZindex("navigation");
     transform: translateY(0%);
@@ -11,6 +10,7 @@
 
     &.has-scrolled {
         transform: translateY(0%);
+        background-color: $black;
         transition: transform 0.4s ease-out, background-color 0.3s;
 
         &.slide-up {

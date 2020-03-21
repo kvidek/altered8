@@ -1,2 +1,18 @@
 .c-footer {
+    pointer-events: initial;
+}
+
+.c-credits {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    //overrides
+    p {
+        padding-right: 15px;
+    }
+
+    a {
+        padding-left: 15px;
+    }
 }

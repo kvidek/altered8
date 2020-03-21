@@ -104,16 +104,9 @@
  * Hanken Grotesk
  */
 @font-face {
-  font-family: "Hanken-Grotesk";
-  src: url("../fonts/HankenGrotesk-Regular.woff2?1") format("woff2"), url("../fonts/HankenGrotesk-Regular.woff?1") format("woff");
+  font-family: "RobotoMono-Regular";
+  src: url("../fonts/RobotoMono-Regular.woff2?1") format("woff2"), url("../fonts/RobotoMono-Regular.woff?1") format("woff");
   font-weight: normal;
-  font-style: normal;
-  font-display: swap; }
-
-@font-face {
-  font-family: "Hanken-Grotesk";
-  src: url("../fonts/HankenGrotesk-SemiBold.woff2?1") format("woff2"), url("../fonts/HankenGrotesk-SemiBold.woff?1") format("woff");
-  font-weight: 600;
   font-style: normal;
   font-display: swap; }
 
@@ -452,6 +445,7 @@ summary {
  */
 html,
 body {
+  font-family: "RobotoMono-Regular", sans-serif;
   width: 100%;
   height: 100%;
   -webkit-font-smoothing: antialiased; }
@@ -463,12 +457,10 @@ html.is-locked {
   position: fixed; }
 
 body {
-  font-family: "Hanken-Grotesk", sans-serif;
-  font-weight: normal;
-  font-size: 18px;
-  line-height: 1.44444em;
-  color: #000000;
-  background-color: #ffffff; }
+  font-family: "RobotoMono-Regular", sans-serif;
+  background-color: #131316;
+  color: #ffffff;
+  position: relative; }
 
 a {
   color: inherit;
@@ -485,14 +477,17 @@ a {
   padding-right: 4.16667%; }
 
 .o-footer {
-  padding: 20px 0; }
+  padding: 20px 0;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%; }
 
 .o-navigation {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
-  background-color: #ffffff;
   padding: 20px 0;
   z-index: 5;
   -webkit-transform: translateY(0%);
@@ -503,6 +498,7 @@ a {
 .o-navigation.has-scrolled {
   -webkit-transform: translateY(0%);
           transform: translateY(0%);
+  background-color: #131316;
   -webkit-transition: background-color 0.3s, -webkit-transform 0.4s ease-out;
   transition: background-color 0.3s, -webkit-transform 0.4s ease-out;
   transition: transform 0.4s ease-out, background-color 0.3s;
@@ -513,11 +509,103 @@ a {
           transform: translateY(-100%); }
 
 .o-page {
-  padding-top: 120px; }
+  position: relative; }
+
+.o-page--homepage {
+  pointer-events: none; }
 
 /**
  * Components
  */
+.c-footer {
+  pointer-events: initial; }
+
+.c-credits {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between; }
+
+.c-credits p {
+  padding-right: 15px; }
+
+.c-credits a {
+  padding-left: 15px; }
+
+.c-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  opacity: 0.85;
+  z-index: 0; }
+
+.c-background canvas {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: auto;
+  height: auto;
+  min-width: 100%;
+  min-height: 100%;
+  -webkit-transform: translate(-50%, -50%);
+          transform: translate(-50%, -50%); }
+
+.c-logo {
+  display: inline-block;
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat; }
+
+.c-logo--sign {
+  width: 43.33333px;
+  height: 26.66667px;
+  background-image: url(../ui/altrd8-logo--sign.svg); }
+
+.c-logo--full {
+  width: 47vw;
+  height: 8vw;
+  background-image: url(../ui/altrd8-logo--full.svg); }
+
+@media (max-width: 480px) {
+  .c-logo--full {
+    width: 289.23077px;
+    height: 49.23077px; } }
+
+.c-altrd8 {
+  width: 47vw; }
+
+@media (max-width: 480px) {
+  .c-altrd8 {
+    width: 289.23077px; } }
+
+.c-altrd8 .c-logo {
+  margin-bottom: 10px; }
+
+.c-altrd8 .u-b0 {
+  max-width: 240px; }
+
+.c-header--homepage {
+  height: 100vh;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  padding-top: 120px;
+  padding-bottom: 120px; }
+
 /**
  * Pages
  */
@@ -532,133 +620,14 @@ a {
   stroke: currentColor;
   fill: currentColor; }
 
-.u-a3 {
-  font-family: "Hanken-Grotesk", sans-serif;
-  font-size: 35px;
-  line-height: 43px;
-  letter-spacing: 2px;
-  font-weight: normal; }
-
-@media (min-width: 480px) {
-  .u-a3 {
-    font-size: calc(4.67391vw + 12.56522px); } }
-
-@media (min-width: 1400px) {
-  .u-a3 {
-    font-size: 78px; } }
-
-@media (min-width: 2000px) {
-  .u-a3 {
-    font-size: 78px; } }
-
-@media (min-width: 480px) {
-  .u-a3 {
-    line-height: calc(4.67391vw + 20.56522px); } }
-
-@media (min-width: 1400px) {
-  .u-a3 {
-    line-height: 86px; } }
-
-@media (min-width: 2000px) {
-  .u-a3 {
-    line-height: 86px; } }
-
-@media (max-width: 480px) {
-  .u-a3 {
-    letter-spacing: 0; } }
-
-.u-a2 {
-  font-family: "Hanken-Grotesk", sans-serif;
-  font-size: 35px;
-  line-height: 43px;
-  font-weight: normal; }
-
-@media (min-width: 480px) {
-  .u-a2 {
-    font-size: calc(1.63043vw + 27.17391px); } }
-
-@media (min-width: 1400px) {
-  .u-a2 {
-    font-size: 50px; } }
-
-@media (min-width: 2000px) {
-  .u-a2 {
-    font-size: 50px; } }
-
-@media (min-width: 480px) {
-  .u-a2 {
-    line-height: calc(2.5vw + 31px); } }
-
-@media (min-width: 1400px) {
-  .u-a2 {
-    line-height: calc(-1.66667vw + 89.33333px); } }
-
-@media (min-width: 2000px) {
-  .u-a2 {
-    line-height: 56px; } }
-
-.u-a1 {
-  font-family: "Hanken-Grotesk", sans-serif;
-  font-size: 14px;
-  line-height: 20px;
-  letter-spacing: 0.3px;
-  font-weight: normal; }
-
-@media (min-width: 480px) {
-  .u-a1 {
-    font-size: calc(0.43478vw + 11.91304px); } }
-
-@media (min-width: 1400px) {
-  .u-a1 {
-    font-size: 18px; } }
-
-@media (min-width: 2000px) {
-  .u-a1 {
-    font-size: 18px; } }
-
-@media (min-width: 480px) {
-  .u-a1 {
-    line-height: calc(0.65217vw + 16.86957px); } }
-
-@media (min-width: 1400px) {
-  .u-a1 {
-    line-height: 26px; } }
-
-@media (min-width: 2000px) {
-  .u-a1 {
-    line-height: 26px; } }
-
-@media (max-width: 480px) {
-  .u-a1 {
-    letter-spacing: 0; } }
-
 .u-b0 {
-  font-family: "Hanken-Grotesk", sans-serif;
   font-size: 16px;
   line-height: 23px;
   font-weight: normal; }
 
-@media (min-width: 480px) {
-  .u-b0 {
-    font-size: 16px; } }
-
-@media (min-width: 1400px) {
-  .u-b0 {
-    font-size: 16px; } }
-
-@media (min-width: 480px) {
-  .u-b0 {
-    line-height: 23px; } }
-
-@media (min-width: 1400px) {
-  .u-b0 {
-    line-height: 23px; } }
-
 .u-b1 {
-  font-family: "Hanken-Grotesk", sans-serif;
   font-size: 13px;
-  line-height: 19px;
-  font-weight: normal; }
+  line-height: 18px; }
 
 .u-uppercase {
   text-transform: uppercase; }

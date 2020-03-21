@@ -1,0 +1,25 @@
+//LOGO
+.c-logo {
+    display: inline-block;
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+
+    //modifiers
+    &--sign {
+        width: 260/6 * 1px;
+        height: 160/6 * 1px;
+        background-image: url(../ui/altrd8-logo--sign.svg);
+    }
+
+    &--full {
+        width: 940/20 * 1vw;
+        height: 160/20 * 1vw;
+        background-image: url(../ui/altrd8-logo--full.svg);
+
+        @include mq(sm) {
+            width: 940/3.25 * 1px;
+            height: 160/3.25 * 1px;
+        }
+    }
+}

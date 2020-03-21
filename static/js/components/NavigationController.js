@@ -12,7 +12,7 @@ export default class NavigationController {
          * @type {{navigationSlideUp: string, navigation: string, activeClass: string, navigationScrolled: string, navigationFixed: string}}
          * @private
          */
-        const _defaults = {
+        let _defaults = {
             //
             activeClass: "is-active",
 
