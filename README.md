@@ -1,4 +1,6 @@
-# Gulp based build system
+# Altered8 — web
+
+#### Build system
 
 - [Gulp](https://gulpjs.com/) 4 used
 - [browsersync](https://browsersync.io/) for live reload
