@@ -26,7 +26,7 @@ export default class Loader {
 
         this.loaderTl = gsap.timeline({
             paused: true,
-            delay: 0.6,
+            // delay: 0.6,
             onComplete: () => {
                 document.documentElement.classList.remove("is-locked");
                 this.loaderWrapper.parentNode.removeChild(this.loaderWrapper);
