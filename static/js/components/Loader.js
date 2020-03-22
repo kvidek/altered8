@@ -29,7 +29,7 @@ export default class Loader {
             delay: 0.6,
             onComplete: () => {
                 document.documentElement.classList.remove("is-locked");
-                //this.loader.parentNode.removeChild(this.loaderWrapper);
+                this.loaderWrapper.parentNode.removeChild(this.loaderWrapper);
             },
         });
 

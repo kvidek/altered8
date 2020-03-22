@@ -1,4 +1,5 @@
 import CustomCursor from "./components/CustomCursor";
+import MobileMotion from "./components/MobileMotion";
 import Loader from "./components/Loader";
 import NavigationController from "./components/NavigationController";
 import Background from "./components/Background";
@@ -31,6 +32,9 @@ function ready(callbackFunc) {
  */
 ready(function() {
     const cursor = new CustomCursor();
+
+    const mobileMotion = new MobileMotion();
+    mobileMotion.init();
 
     const loader = new Loader();
     loader.playTimeline();

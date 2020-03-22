@@ -14,8 +14,17 @@ export default class Background {
 
         //PIXI stuff
         PIXI.utils.skipHello();
-        this.canvasWidth = this.defaults.canvasWidth;
-        this.canvasHeight = this.defaults.canvasHeight;
+
+        this.canvasWidth =
+            innerWidth > 800
+                ? this.defaults.canvasWidth
+                : this.defaults.canvasWidth / 2;
+        // this.canvasWidth = window.innerWidth;
+        this.canvasHeight =
+            innerHeight > 800
+                ? this.defaults.canvasHeight
+                : this.defaults.canvasHeight / 2;
+        // this.canvasHeight = window.innerWidth * 0.5625;
     }
 
     get canvasContainer() {
@@ -118,6 +127,7 @@ export default class Background {
             height: this.canvasHeight,
             autoStart: false,
             transparent: true,
+            //resizeTo: this.canvasContainer,
         });
 
         // ADD CANVAS TO CANVAS WRAPPER ELEMENT
@@ -148,7 +158,7 @@ export default class Background {
         );
 
         // LOADER //
-        app.loader.load(function(loader, resources) {
+        app.loader.load((loader, resources) => {
             var tempBg = new PIXI.Sprite(resources.bg.texture);
             tempBg.width = app.screen.width;
             tempBg.height = app.screen.height;
@@ -178,7 +188,10 @@ export default class Background {
             containers[2].filters[1].blendMode = PIXI.BLEND_MODES.ADD;
 
             app.stage.interactive = true;
-            app.stage.on("pointermove", onPointerMove);
+
+            if (this.canvasWidth > 800) {
+                app.stage.on("pointermove", onPointerMove);
+            }
 
             app.start();
         });
