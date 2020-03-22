@@ -50706,6 +50706,403 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = void 0;
 
+var _gsap = _interopRequireDefault(require("gsap"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
+
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(n); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+
+function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && Symbol.iterator in Object(iter)) return Array.from(iter); }
+
+function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
+
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+/**
+ * CustomCursor class
+ */
+var CustomCursor = /*#__PURE__*/function () {
+  /**
+   *
+   * @param {object} options
+   */
+  function CustomCursor(options) {
+    _classCallCheck(this, CustomCursor);
+
+    var _defaults = {
+      //CURSOR
+      cursor: ".js-cursor",
+      cursorFollower: ".js-cursor-follower",
+      link: ".js-link",
+      dragContainer: ".js-drag-container",
+      //CSS state classes
+      activeClass: "is-active",
+      hoverClass: "is-hovered",
+      dragClass: "is-drag",
+      pressClass: "is-pressed"
+    };
+    this.defaults = Object.assign({}, _defaults, options);
+
+    if (this.cursor) {
+      this.init();
+    }
+  }
+
+  _createClass(CustomCursor, [{
+    key: "init",
+    value: function init() {
+      console.log("CustomCursor init()");
+      this.cursorController();
+    } //CURSOR
+
+    /**
+     *
+     */
+
+  }, {
+    key: "cursorController",
+    value: function cursorController() {
+      var _this = this;
+
+      document.addEventListener("mousemove", function (ev) {
+        _this.onMouseMove(ev);
+      });
+      document.addEventListener("mousedown", function (ev) {
+        _this.onMouseDown(ev, _this.defaults.pressClass);
+      });
+      document.addEventListener("mouseup", function (ev) {
+        _this.onMouseUp(ev, _this.defaults.pressClass);
+      });
+
+      _toConsumableArray(this.links).forEach(function (link) {
+        link.addEventListener("mouseenter", function (ev) {
+          _this.onMouseEnter(ev, _this.defaults.activeClass);
+        });
+        link.addEventListener("mouseleave", function (ev) {
+          _this.onMouseLeave(ev, _this.defaults.activeClass);
+        });
+      });
+
+      _toConsumableArray(this.dragContainers).forEach(function (dragContainer) {
+        dragContainer.addEventListener("mouseenter", function (ev) {
+          _this.onMouseEnter(ev, _this.defaults.dragClass);
+        });
+        dragContainer.addEventListener("mouseleave", function (ev) {
+          _this.onMouseLeave(ev, _this.defaults.dragClass);
+        });
+      });
+    }
+    /**
+     *
+     * @param event
+     */
+
+  }, {
+    key: "onMouseMove",
+    value: function onMouseMove(event) {
+      _gsap.default.to(this.cursor, 0.25, {
+        x: event.clientX,
+        y: event.clientY
+      });
+
+      _gsap.default.to(this.cursorFollower, 0.5, {
+        x: event.clientX,
+        y: event.clientY,
+        ease: "power3.easeOut"
+      });
+    }
+    /**
+     *
+     * @param event
+     * @param stateClass
+     */
+
+  }, {
+    key: "onMouseEnter",
+    value: function onMouseEnter(event, stateClass) {
+      this.cursor.classList.add(stateClass);
+      this.cursorFollower.classList.add(stateClass);
+      event.currentTarget.classList.add(this.defaults.hoverClass);
+
+      _gsap.default.to(this.cursorFollower, 0.25, {
+        scale: 1.25,
+        ease: "power2.out"
+      });
+    }
+    /**
+     *
+     * @param event
+     * @param stateClass
+     */
+
+  }, {
+    key: "onMouseLeave",
+    value: function onMouseLeave(event, stateClass) {
+      this.cursor.classList.remove(stateClass);
+      this.cursorFollower.classList.remove(stateClass);
+      event.currentTarget.classList.remove(this.defaults.hoverClass);
+
+      _gsap.default.to(this.cursorFollower, 0.25, {
+        scale: 1,
+        ease: "power2.out"
+      });
+    }
+    /**
+     *
+     * @param event
+     * @param stateClass
+     */
+
+  }, {
+    key: "onMouseDown",
+    value: function onMouseDown(event, stateClass) {
+      this.cursor.classList.add(stateClass);
+      this.cursorFollower.classList.add(stateClass);
+
+      _gsap.default.to(this.cursorFollower, 0.25, {
+        scale: 0.7,
+        ease: "power3.easeOut"
+      });
+    }
+    /**
+     *
+     * @param event
+     * @param stateClass
+     */
+
+  }, {
+    key: "onMouseUp",
+    value: function onMouseUp(event, stateClass) {
+      this.cursor.classList.remove(stateClass);
+      this.cursorFollower.classList.remove(stateClass);
+
+      _gsap.default.to(this.cursorFollower, 0.25, {
+        scale: 1,
+        ease: "power3.easeOut"
+      });
+    }
+  }, {
+    key: "cursor",
+    get: function get() {
+      return document.querySelector(this.defaults.cursor);
+    }
+  }, {
+    key: "cursorFollower",
+    get: function get() {
+      return document.querySelector(this.defaults.cursorFollower);
+    }
+  }, {
+    key: "links",
+    get: function get() {
+      return document.querySelectorAll(this.defaults.link);
+    }
+  }, {
+    key: "dragContainers",
+    get: function get() {
+      return document.querySelectorAll(this.defaults.dragContainer);
+    }
+  }]);
+
+  return CustomCursor;
+}();
+
+exports.default = CustomCursor;
+
+},{"gsap":38}],56:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _gsap = _interopRequireDefault(require("gsap"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+/**
+ * Loader class
+ */
+var Loader = /*#__PURE__*/function () {
+  /**
+   *
+   * @param options
+   */
+  function Loader(options) {
+    _classCallCheck(this, Loader);
+
+    /**
+     *
+     * @type {{navigationSlideUp: string, navigation: string, activeClass: string, navigationScrolled: string, navigationFixed: string}}
+     * @private
+     */
+    var _defaults = {
+      //
+      loaderWrapper: ".js-loader-wrapper",
+      loader: ".js-loader",
+      background: ".js-background",
+      loaderLayer: ".js-loader-layer",
+      stagingLogo: ".js-staging-logo",
+      stagingElement: ".js-staging-element"
+    };
+    this.loaderTl = _gsap.default.timeline({
+      paused: true,
+      delay: 0.6,
+      onComplete: function onComplete() {
+        document.documentElement.classList.remove("is-locked"); //this.loader.parentNode.removeChild(this.loaderWrapper);
+      }
+    }); //loader config
+
+    this.defaults = Object.assign({}, _defaults, options);
+
+    if (this.loader) {
+      this.init();
+      this.initLoader();
+    }
+  } //region getters
+
+  /**
+   *
+   * @returns {Element}
+   */
+
+
+  _createClass(Loader, [{
+    key: "init",
+    //endregion
+    //region methods
+
+    /**
+     *
+     */
+    value: function init() {
+      console.log("Navigation init()");
+    } //LOADER
+
+    /**
+     *
+     */
+
+  }, {
+    key: "initLoader",
+    value: function initLoader() {
+      var duration = 1.8;
+      this.loaderTl.add("tlStart").to(this.loaderLayers, {
+        duration: duration,
+        x: "100%",
+        stagger: {
+          each: 0.015,
+          from: "end"
+        },
+        ease: "power3.inOut"
+      }, "tlStart").fromTo(this.stagingElements, {
+        x: "-75%",
+        skewX: "-2.5deg",
+        autoAlpha: 0
+      }, {
+        duration: duration,
+        autoAlpha: 1,
+        x: "0%",
+        skewX: "0deg",
+        stagger: {
+          each: 0.1,
+          from: "start"
+        },
+        ease: "power3.inOut"
+      }, "tlStart+=0.2").fromTo(this.stagingLogo, {
+        x: "-25%",
+        skewX: "-1.5deg",
+        autoAlpha: 0
+      }, {
+        duration: duration,
+        autoAlpha: 1,
+        x: "0%",
+        skewX: "0deg",
+        ease: "power3.inOut"
+      }, "tlStart+=0.2").fromTo(this.background, {
+        scale: 1.25
+      }, {
+        scale: 1,
+        duration: 2.2,
+        ease: "power3.inOut"
+      }, "tlStart").fromTo(this.loader, {
+        skewX: "-1.5deg"
+      }, {
+        duration: duration,
+        skewX: "0deg",
+        ease: "power3.inOut"
+      }, "tlStart").to(this.loaderWrapper, {
+        duration: 0.2,
+        autoAlpha: 0
+      });
+    }
+  }, {
+    key: "playTimeline",
+    value: function playTimeline() {
+      this.loaderTl.play();
+    } //endregion
+
+  }, {
+    key: "loaderWrapper",
+    get: function get() {
+      return document.querySelector(this.defaults.loaderWrapper);
+    }
+  }, {
+    key: "loader",
+    get: function get() {
+      return document.querySelector(this.defaults.loader);
+    }
+  }, {
+    key: "loaderLayers",
+    get: function get() {
+      return document.querySelectorAll(this.defaults.loaderLayer);
+    }
+  }, {
+    key: "stagingLogo",
+    get: function get() {
+      return document.querySelector(this.defaults.stagingLogo);
+    }
+  }, {
+    key: "stagingElements",
+    get: function get() {
+      return document.querySelectorAll(this.defaults.stagingElement);
+    }
+  }, {
+    key: "background",
+    get: function get() {
+      return document.querySelector(this.defaults.background);
+    }
+  }]);
+
+  return Loader;
+}();
+
+exports.default = Loader;
+
+},{"gsap":38}],57:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
@@ -50899,8 +51296,12 @@ var NavigationController = /*#__PURE__*/function () {
 
 exports.default = NavigationController;
 
-},{}],56:[function(require,module,exports){
+},{}],58:[function(require,module,exports){
 "use strict";
+
+var _CustomCursor = _interopRequireDefault(require("./components/CustomCursor"));
+
+var _Loader = _interopRequireDefault(require("./components/Loader"));
 
 var _NavigationController = _interopRequireDefault(require("./components/NavigationController"));
 
@@ -50936,12 +51337,15 @@ function ready(callbackFunc) {
 
 
 ready(function () {
+  var cursor = new _CustomCursor.default();
+  var loader = new _Loader.default();
+  loader.playTimeline();
   var background = new _Background.default();
   background.init();
   var navigation = new _NavigationController.default();
   navigation.init();
 });
 
-},{"./components/Background":54,"./components/NavigationController":55}]},{},[56]);
+},{"./components/Background":54,"./components/CustomCursor":55,"./components/Loader":56,"./components/NavigationController":57}]},{},[58]);
 
 //# sourceMappingURL=bundle.js.map

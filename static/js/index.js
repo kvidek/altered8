@@ -1,3 +1,5 @@
+import CustomCursor from "./components/CustomCursor";
+import Loader from "./components/Loader";
 import NavigationController from "./components/NavigationController";
 import Background from "./components/Background";
 
@@ -28,6 +30,11 @@ function ready(callbackFunc) {
  * Document ready callback
  */
 ready(function() {
+    const cursor = new CustomCursor();
+
+    const loader = new Loader();
+    loader.playTimeline();
+
     const background = new Background();
     background.init();
 
