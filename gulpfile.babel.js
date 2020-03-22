@@ -97,7 +97,10 @@ export function watchScripts() {
  */
 export function buildScripts() {
     return browserify(paths.scripts.main)
-        .transform("babelify")
+        .transform("babelify", {
+            global: true,
+            presets: ["@babel/preset-env"],
+        })
         .bundle()
         .pipe(source("bundle.js"))
         .pipe(buffer())

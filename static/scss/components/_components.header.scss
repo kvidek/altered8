@@ -7,5 +7,15 @@
         padding-top: 120px;
         padding-bottom: 120px;
         pointer-events: none;
+
+        @include mq("md") {
+            padding-top: 80px;
+            padding-bottom: 80px;
+        }
+
+        @include mq("md") {
+            padding-top: 60px;
+            padding-bottom: 60px;
+        }
     }
 }

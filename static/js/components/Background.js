@@ -13,7 +13,7 @@ export default class Background {
         this.defaults = Object.assign({}, _defaults, options);
 
         //PIXI stuff
-        //PIXI.utils.skipHello();
+        PIXI.utils.skipHello();
         this.canvasWidth = this.defaults.canvasWidth;
         this.canvasHeight = this.defaults.canvasHeight;
     }
@@ -26,8 +26,8 @@ export default class Background {
         console.log("Background init()");
 
         let rt = [],
-            rts = [],
             bgs = [],
+            rts = [],
             containers = [],
             channelsContainer = [],
             displacementFilters = [],

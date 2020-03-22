@@ -11,9 +11,9 @@
     z-index: 10000;
     transform: scale(1);
 
-    //@supports (mix-blend-mode: difference) {
-    //    mix-blend-mode: difference;
-    //}
+    @media (hover: none) {
+        display: none;
+    }
 
     &.is-active {
         cursor: none;
@@ -82,6 +82,10 @@
 
     @supports (mix-blend-mode: difference) {
         mix-blend-mode: difference;
+    }
+
+    @media (hover: none) {
+        display: none;
     }
 
     &.is-active {
