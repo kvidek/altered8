@@ -1,3 +1,5 @@
+import 'mailgo';
+
 import CustomCursor from "./components/CustomCursor";
 import MobileMotion from "./components/MobileMotion";
 import Loader from "./components/Loader";
