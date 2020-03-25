@@ -1,8 +1,26 @@
 window.esdocSearchIndex = [
   [
-    "gulp4-boilerplate/components/dummy.js~dummy",
-    "class/components/Dummy.js~Dummy.html",
-    "<span>Dummy</span> <span class=\"search-result-import-path\">gulp4-boilerplate/components/Dummy.js</span>",
+    "gulp4-boilerplate/components/background.js~background",
+    "class/components/Background.js~Background.html",
+    "<span>Background</span> <span class=\"search-result-import-path\">gulp4-boilerplate/components/Background.js</span>",
+    "class"
+  ],
+  [
+    "gulp4-boilerplate/components/customcursor.js~customcursor",
+    "class/components/CustomCursor.js~CustomCursor.html",
+    "<span>CustomCursor</span> <span class=\"search-result-import-path\">gulp4-boilerplate/components/CustomCursor.js</span>",
+    "class"
+  ],
+  [
+    "gulp4-boilerplate/components/loader.js~loader",
+    "class/components/Loader.js~Loader.html",
+    "<span>Loader</span> <span class=\"search-result-import-path\">gulp4-boilerplate/components/Loader.js</span>",
+    "class"
+  ],
+  [
+    "gulp4-boilerplate/components/mobilemotion.js~mobilemotion",
+    "class/components/MobileMotion.js~MobileMotion.html",
+    "<span>MobileMotion</span> <span class=\"search-result-import-path\">gulp4-boilerplate/components/MobileMotion.js</span>",
     "class"
   ],
   [
@@ -294,21 +312,243 @@ window.esdocSearchIndex = [
     "external"
   ],
   [
-    "components/dummy.js",
-    "file/components/Dummy.js.html",
-    "components/Dummy.js",
+    "components/background.js",
+    "file/components/Background.js.html",
+    "components/Background.js",
     "file"
   ],
   [
-    "components/dummy.js~dummy#constructor",
-    "class/components/Dummy.js~Dummy.html#instance-constructor-constructor",
-    "components/Dummy.js~Dummy#constructor",
+    "components/background.js~background#canvascontainer",
+    "class/components/Background.js~Background.html#instance-get-canvasContainer",
+    "components/Background.js~Background#canvasContainer",
+    "member"
+  ],
+  [
+    "components/background.js~background#canvasheight",
+    "class/components/Background.js~Background.html#instance-member-canvasHeight",
+    "components/Background.js~Background#canvasHeight",
+    "member"
+  ],
+  [
+    "components/background.js~background#canvaswidth",
+    "class/components/Background.js~Background.html#instance-member-canvasWidth",
+    "components/Background.js~Background#canvasWidth",
+    "member"
+  ],
+  [
+    "components/background.js~background#constructor",
+    "class/components/Background.js~Background.html#instance-constructor-constructor",
+    "components/Background.js~Background#constructor",
     "method"
   ],
   [
-    "components/dummy.js~dummy#init",
-    "class/components/Dummy.js~Dummy.html#instance-method-init",
-    "components/Dummy.js~Dummy#init",
+    "components/background.js~background#defaults",
+    "class/components/Background.js~Background.html#instance-member-defaults",
+    "components/Background.js~Background#defaults",
+    "member"
+  ],
+  [
+    "components/background.js~background#init",
+    "class/components/Background.js~Background.html#instance-method-init",
+    "components/Background.js~Background#init",
+    "method"
+  ],
+  [
+    "components/customcursor.js",
+    "file/components/CustomCursor.js.html",
+    "components/CustomCursor.js",
+    "file"
+  ],
+  [
+    "components/customcursor.js~customcursor#constructor",
+    "class/components/CustomCursor.js~CustomCursor.html#instance-constructor-constructor",
+    "components/CustomCursor.js~CustomCursor#constructor",
+    "method"
+  ],
+  [
+    "components/customcursor.js~customcursor#cursor",
+    "class/components/CustomCursor.js~CustomCursor.html#instance-get-cursor",
+    "components/CustomCursor.js~CustomCursor#cursor",
+    "member"
+  ],
+  [
+    "components/customcursor.js~customcursor#cursorcontroller",
+    "class/components/CustomCursor.js~CustomCursor.html#instance-method-cursorController",
+    "components/CustomCursor.js~CustomCursor#cursorController",
+    "method"
+  ],
+  [
+    "components/customcursor.js~customcursor#cursorfollower",
+    "class/components/CustomCursor.js~CustomCursor.html#instance-get-cursorFollower",
+    "components/CustomCursor.js~CustomCursor#cursorFollower",
+    "member"
+  ],
+  [
+    "components/customcursor.js~customcursor#defaults",
+    "class/components/CustomCursor.js~CustomCursor.html#instance-member-defaults",
+    "components/CustomCursor.js~CustomCursor#defaults",
+    "member"
+  ],
+  [
+    "components/customcursor.js~customcursor#dragcontainers",
+    "class/components/CustomCursor.js~CustomCursor.html#instance-get-dragContainers",
+    "components/CustomCursor.js~CustomCursor#dragContainers",
+    "member"
+  ],
+  [
+    "components/customcursor.js~customcursor#init",
+    "class/components/CustomCursor.js~CustomCursor.html#instance-method-init",
+    "components/CustomCursor.js~CustomCursor#init",
+    "method"
+  ],
+  [
+    "components/customcursor.js~customcursor#links",
+    "class/components/CustomCursor.js~CustomCursor.html#instance-get-links",
+    "components/CustomCursor.js~CustomCursor#links",
+    "member"
+  ],
+  [
+    "components/customcursor.js~customcursor#onmousedown",
+    "class/components/CustomCursor.js~CustomCursor.html#instance-method-onMouseDown",
+    "components/CustomCursor.js~CustomCursor#onMouseDown",
+    "method"
+  ],
+  [
+    "components/customcursor.js~customcursor#onmouseenter",
+    "class/components/CustomCursor.js~CustomCursor.html#instance-method-onMouseEnter",
+    "components/CustomCursor.js~CustomCursor#onMouseEnter",
+    "method"
+  ],
+  [
+    "components/customcursor.js~customcursor#onmouseleave",
+    "class/components/CustomCursor.js~CustomCursor.html#instance-method-onMouseLeave",
+    "components/CustomCursor.js~CustomCursor#onMouseLeave",
+    "method"
+  ],
+  [
+    "components/customcursor.js~customcursor#onmousemove",
+    "class/components/CustomCursor.js~CustomCursor.html#instance-method-onMouseMove",
+    "components/CustomCursor.js~CustomCursor#onMouseMove",
+    "method"
+  ],
+  [
+    "components/customcursor.js~customcursor#onmouseup",
+    "class/components/CustomCursor.js~CustomCursor.html#instance-method-onMouseUp",
+    "components/CustomCursor.js~CustomCursor#onMouseUp",
+    "method"
+  ],
+  [
+    "components/loader.js",
+    "file/components/Loader.js.html",
+    "components/Loader.js",
+    "file"
+  ],
+  [
+    "components/loader.js~loader#background",
+    "class/components/Loader.js~Loader.html#instance-get-background",
+    "components/Loader.js~Loader#background",
+    "member"
+  ],
+  [
+    "components/loader.js~loader#constructor",
+    "class/components/Loader.js~Loader.html#instance-constructor-constructor",
+    "components/Loader.js~Loader#constructor",
+    "method"
+  ],
+  [
+    "components/loader.js~loader#defaults",
+    "class/components/Loader.js~Loader.html#instance-member-defaults",
+    "components/Loader.js~Loader#defaults",
+    "member"
+  ],
+  [
+    "components/loader.js~loader#init",
+    "class/components/Loader.js~Loader.html#instance-method-init",
+    "components/Loader.js~Loader#init",
+    "method"
+  ],
+  [
+    "components/loader.js~loader#initloader",
+    "class/components/Loader.js~Loader.html#instance-method-initLoader",
+    "components/Loader.js~Loader#initLoader",
+    "method"
+  ],
+  [
+    "components/loader.js~loader#loader",
+    "class/components/Loader.js~Loader.html#instance-get-loader",
+    "components/Loader.js~Loader#loader",
+    "member"
+  ],
+  [
+    "components/loader.js~loader#loaderlayers",
+    "class/components/Loader.js~Loader.html#instance-get-loaderLayers",
+    "components/Loader.js~Loader#loaderLayers",
+    "member"
+  ],
+  [
+    "components/loader.js~loader#loadertl",
+    "class/components/Loader.js~Loader.html#instance-member-loaderTl",
+    "components/Loader.js~Loader#loaderTl",
+    "member"
+  ],
+  [
+    "components/loader.js~loader#loaderwrapper",
+    "class/components/Loader.js~Loader.html#instance-get-loaderWrapper",
+    "components/Loader.js~Loader#loaderWrapper",
+    "member"
+  ],
+  [
+    "components/loader.js~loader#playtimeline",
+    "class/components/Loader.js~Loader.html#instance-method-playTimeline",
+    "components/Loader.js~Loader#playTimeline",
+    "method"
+  ],
+  [
+    "components/loader.js~loader#stagingelements",
+    "class/components/Loader.js~Loader.html#instance-get-stagingElements",
+    "components/Loader.js~Loader#stagingElements",
+    "member"
+  ],
+  [
+    "components/loader.js~loader#staginglogo",
+    "class/components/Loader.js~Loader.html#instance-get-stagingLogo",
+    "components/Loader.js~Loader#stagingLogo",
+    "member"
+  ],
+  [
+    "components/mobilemotion.js",
+    "file/components/MobileMotion.js.html",
+    "components/MobileMotion.js",
+    "file"
+  ],
+  [
+    "components/mobilemotion.js~mobilemotion#constructor",
+    "class/components/MobileMotion.js~MobileMotion.html#instance-constructor-constructor",
+    "components/MobileMotion.js~MobileMotion#constructor",
+    "method"
+  ],
+  [
+    "components/mobilemotion.js~mobilemotion#defaults",
+    "class/components/MobileMotion.js~MobileMotion.html#instance-member-defaults",
+    "components/MobileMotion.js~MobileMotion#defaults",
+    "member"
+  ],
+  [
+    "components/mobilemotion.js~mobilemotion#init",
+    "class/components/MobileMotion.js~MobileMotion.html#instance-method-init",
+    "components/MobileMotion.js~MobileMotion#init",
+    "method"
+  ],
+  [
+    "components/mobilemotion.js~mobilemotion#mobilemotionlayer",
+    "class/components/MobileMotion.js~MobileMotion.html#instance-get-mobileMotionLayer",
+    "components/MobileMotion.js~MobileMotion#mobileMotionLayer",
+    "member"
+  ],
+  [
+    "components/mobilemotion.js~mobilemotion#mobilemove",
+    "class/components/MobileMotion.js~MobileMotion.html#instance-method-mobileMove",
+    "components/MobileMotion.js~MobileMotion#mobileMove",
     "method"
   ],
   [
@@ -318,9 +558,15 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
-    "components/navigationcontroller.js~navigationcontroller#activatenavigation",
-    "class/components/NavigationController.js~NavigationController.html#instance-method-activateNavigation",
-    "components/NavigationController.js~NavigationController#activateNavigation",
+    "components/navigationcontroller.js~navigationcontroller#dom",
+    "class/components/NavigationController.js~NavigationController.html#instance-member-DOM",
+    "components/NavigationController.js~NavigationController#DOM",
+    "member"
+  ],
+  [
+    "components/navigationcontroller.js~navigationcontroller#changenavigationstate",
+    "class/components/NavigationController.js~NavigationController.html#instance-method-changeNavigationState",
+    "components/NavigationController.js~NavigationController#changeNavigationState",
     "method"
   ],
   [
@@ -342,12 +588,6 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
-    "components/navigationcontroller.js~navigationcontroller#defaults",
-    "class/components/NavigationController.js~NavigationController.html#instance-member-defaults",
-    "components/NavigationController.js~NavigationController#defaults",
-    "member"
-  ],
-  [
     "components/navigationcontroller.js~navigationcontroller#init",
     "class/components/NavigationController.js~NavigationController.html#instance-method-init",
     "components/NavigationController.js~NavigationController#init",
@@ -355,7 +595,7 @@ window.esdocSearchIndex = [
   ],
   [
     "components/navigationcontroller.js~navigationcontroller#navigation",
-    "class/components/NavigationController.js~NavigationController.html#instance-get-navigation",
+    "class/components/NavigationController.js~NavigationController.html#instance-member-navigation",
     "components/NavigationController.js~NavigationController#navigation",
     "member"
   ],
@@ -393,6 +633,12 @@ window.esdocSearchIndex = [
     "components/navigationcontroller.js~navigationcontroller#scrolling",
     "class/components/NavigationController.js~NavigationController.html#instance-member-scrolling",
     "components/NavigationController.js~NavigationController#scrolling",
+    "member"
+  ],
+  [
+    "components/navigationcontroller.js~navigationcontroller#states",
+    "class/components/NavigationController.js~NavigationController.html#instance-member-states",
+    "components/NavigationController.js~NavigationController#states",
     "member"
   ]
 ]

@@ -1,6 +1,4 @@
 /**
- * Navigation class
- * ================
  * "smart" navigation which goes off screen when scrolling down for a better overview of content and UX
  * navigation appears when scrolling up
  */

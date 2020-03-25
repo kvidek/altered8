@@ -566,10 +566,10 @@
   {
     "__docId__": 48,
     "kind": "file",
-    "name": "components/Dummy.js",
-    "content": "export default class Dummy {\n    constructor() {}\n\n    init() {\n        console.log(\"Loaded!\");\n    }\n}\n",
+    "name": "components/Background.js",
+    "content": "import * as PIXI from \"pixi.js\";\nimport gsap from \"gsap\";\n\nwindow.PIXI = PIXI;\n\nexport default class Background {\n    constructor(options) {\n        let _defaults = {\n            //\n            canvasWidth: 1600,\n            canvasHeight: 900,\n            canvasContainer: \".js-background\",\n        };\n\n        this.defaults = Object.assign({}, _defaults, options);\n\n        //PIXI stuff\n        //PIXI.utils.skipHello();\n\n        this.canvasWidth =\n            innerWidth > 800\n                ? this.defaults.canvasWidth\n                : this.defaults.canvasWidth / 2;\n        // this.canvasWidth = window.innerWidth;\n        this.canvasHeight =\n            innerHeight > 800\n                ? this.defaults.canvasHeight\n                : this.defaults.canvasHeight / 2;\n        // this.canvasHeight = window.innerWidth * 0.5625;\n    }\n\n    get canvasContainer() {\n        return document.querySelector(this.defaults.canvasContainer);\n    }\n\n    init() {\n        console.log(\"Background init()\");\n\n        let rt = [],\n            bg,\n            bgs = [],\n            rts = [],\n            containers = [],\n            channelsContainer = [],\n            displacementFilters = [],\n            brushes = [];\n\n        // CHANNEL FILTERS\n        let redChannelFilter = new PIXI.filters.ColorMatrixFilter();\n        redChannelFilter.matrix = [\n            1,\n            0,\n            0,\n            0,\n            0,\n            0,\n            0,\n            0,\n            0,\n            0,\n            0,\n            0,\n            0,\n            0,\n            0,\n            0,\n            0,\n            0,\n            1,\n            0,\n        ];\n\n        let greenChannelFilter = new PIXI.filters.ColorMatrixFilter();\n        greenChannelFilter.matrix = [\n            0,\n            0,\n            0,\n            0,\n            0,\n            0,\n            1,\n            0,\n            0,\n            0,\n            0,\n            0,\n            0,\n            0,\n            0,\n            0,\n            0,\n            0,\n            1,\n            0,\n        ];\n\n        let blueChannelFilter = new PIXI.filters.ColorMatrixFilter();\n        blueChannelFilter.matrix = [\n            0,\n            0,\n            0,\n            0,\n            0,\n            0,\n            0,\n            0,\n            0,\n            0,\n            0,\n            0,\n            1,\n            0,\n            0,\n            0,\n            0,\n            0,\n            1,\n            0,\n        ];\n\n        channelsContainer.push(\n            redChannelFilter,\n            greenChannelFilter,\n            blueChannelFilter,\n        );\n\n        let app = new PIXI.Application({\n            width: this.canvasWidth,\n            height: this.canvasHeight,\n            autoStart: false,\n            transparent: true,\n            //resizeTo: this.canvasContainer,\n        });\n\n        // ADD CANVAS TO CANVAS WRAPPER ELEMENT\n        this.canvasContainer.appendChild(app.view);\n\n        for (var i = 0; i < 3; i++) {\n            rt.push(\n                PIXI.RenderTexture.create(app.screen.width, app.screen.height),\n            );\n            rts.push(rt);\n        }\n\n        // CONTAINERS //\n        let containerRed = new PIXI.Container();\n        containerRed.position.x = 0;\n\n        let containerGreen = new PIXI.Container();\n        containerGreen.position.x = 0;\n\n        let containerBlue = new PIXI.Container();\n        containerBlue.position.x = 0;\n\n        containers.push(containerRed, containerGreen, containerBlue);\n\n        // LOAD TEXTURES //\n        app.loader.add(\"bg\", this.canvasContainer.getAttribute(\"data-image\"));\n        app.loader.add(\n            \"one\",\n            this.canvasContainer.getAttribute(\"data-displacement-image\"),\n        );\n\n        // LOADER //\n        app.loader.load((loader, resources) => {\n            var tempBg = new PIXI.Sprite(resources.bg.texture);\n            tempBg.width = app.screen.width;\n            tempBg.height = app.screen.height;\n\n            app.renderer.render(tempBg, rt[0]);\n\n            for (var i = 0, len = containers.length; i < len; i++) {\n                app.stage.addChild(containers[i]);\n                brushes.push(new PIXI.Sprite(resources.one.texture));\n                displacementFilters.push(\n                    new PIXI.filters.DisplacementFilter(brushes[i]),\n                );\n\n                bg = new PIXI.Sprite(rts[0][0]);\n                bgs.push(bg);\n                containers[i].filters = [\n                    channelsContainer[i],\n                    displacementFilters[i],\n                ];\n                containers[i].addChild(bgs[i], brushes[i]);\n            }\n\n            brushes[0].anchor.set(0.5);\n            brushes[1].anchor.set(0.6);\n            brushes[2].anchor.set(0.4);\n            containers[1].filters[1].blendMode = PIXI.BLEND_MODES.ADD;\n            containers[2].filters[1].blendMode = PIXI.BLEND_MODES.ADD;\n\n            app.stage.interactive = true;\n\n            if (this.canvasWidth > 800) {\n                app.stage.on(\"pointermove\", onPointerMove);\n            }\n\n            app.start();\n        });\n\n        function onPointerMove(event) {\n            let x = event.data.global.x;\n            let y = event.data.global.y;\n\n            for (var i = 0, len = containers.length; i < len; i++) {\n                gsap.to(displacementFilters[i].scale, {\n                    duration: 0.2,\n                    x: Math.atan(x - brushes[i].x) * 40,\n                    y: Math.atan(y - brushes[i].y) * 40,\n                    ease: \"power2.out\",\n                });\n\n                brushes[i].position = event.data.global;\n            }\n        }\n    }\n}\n",
     "static": true,
-    "longname": "/Users/karlo/work/altered8/gulp4-boilerplate/static/js/components/Dummy.js",
+    "longname": "/Users/Karlo/work/Altered8/web/altered8/static/js/components/Background.js",
     "access": "public",
     "description": null,
     "lineNumber": 1
@@ -577,16 +577,16 @@
   {
     "__docId__": 49,
     "kind": "class",
-    "name": "Dummy",
-    "memberof": "components/Dummy.js",
+    "name": "Background",
+    "memberof": "components/Background.js",
     "static": true,
-    "longname": "components/Dummy.js~Dummy",
+    "longname": "components/Background.js~Background",
     "access": "public",
     "export": true,
-    "importPath": "gulp4-boilerplate/components/Dummy.js",
-    "importStyle": "Dummy",
+    "importPath": "gulp4-boilerplate/components/Background.js",
+    "importStyle": "Background",
     "description": null,
-    "lineNumber": 1,
+    "lineNumber": 6,
     "undocument": true,
     "interface": false
   },
@@ -594,70 +594,485 @@
     "__docId__": 50,
     "kind": "constructor",
     "name": "constructor",
-    "memberof": "components/Dummy.js~Dummy",
+    "memberof": "components/Background.js~Background",
     "generator": false,
     "async": false,
     "static": false,
-    "longname": "components/Dummy.js~Dummy#constructor",
+    "longname": "components/Background.js~Background#constructor",
     "access": "public",
     "description": null,
-    "lineNumber": 2,
+    "lineNumber": 7,
     "undocument": true
   },
   {
     "__docId__": 51,
-    "kind": "method",
-    "name": "init",
-    "memberof": "components/Dummy.js~Dummy",
+    "kind": "member",
+    "name": "defaults",
+    "memberof": "components/Background.js~Background",
+    "static": false,
+    "longname": "components/Background.js~Background#defaults",
+    "access": "public",
+    "description": null,
+    "lineNumber": 15,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 52,
+    "kind": "member",
+    "name": "canvasWidth",
+    "memberof": "components/Background.js~Background",
+    "static": false,
+    "longname": "components/Background.js~Background#canvasWidth",
+    "access": "public",
+    "description": null,
+    "lineNumber": 20,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 53,
+    "kind": "member",
+    "name": "canvasHeight",
+    "memberof": "components/Background.js~Background",
+    "static": false,
+    "longname": "components/Background.js~Background#canvasHeight",
+    "access": "public",
+    "description": null,
+    "lineNumber": 25,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 54,
+    "kind": "get",
+    "name": "canvasContainer",
+    "memberof": "components/Background.js~Background",
     "generator": false,
     "async": false,
     "static": false,
-    "longname": "components/Dummy.js~Dummy#init",
+    "longname": "components/Background.js~Background#canvasContainer",
     "access": "public",
     "description": null,
-    "lineNumber": 4,
+    "lineNumber": 32,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 55,
+    "kind": "method",
+    "name": "init",
+    "memberof": "components/Background.js~Background",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "components/Background.js~Background#init",
+    "access": "public",
+    "description": null,
+    "lineNumber": 36,
     "undocument": true,
     "params": [],
     "return": null
   },
   {
-    "__docId__": 52,
+    "__docId__": 56,
     "kind": "file",
-    "name": "components/NavigationController.js",
-    "content": "/**\n * Navigation class\n */\nexport default class NavigationController {\n    /**\n     *\n     * @param options\n     */\n    constructor(options) {\n        /**\n         *\n         * @type {{navigationSlideUp: string, navigation: string, activeClass: string, navigationScrolled: string, navigationFixed: string}}\n         * @private\n         */\n        const _defaults = {\n            //\n            activeClass: \"is-active\",\n\n            //NAVIGATION\n            navigation: \".js-navigation-wrapper\",\n\n            //CSS state classes\n            navigationScrolled: \"has-scrolled\",\n            navigationFixed: \"is-fixed\",\n            navigationSlideUp: \"slide-up\",\n        };\n\n        //navigation controller config\n        /**\n         *\n         * @type {boolean}\n         */\n        this.scrolling = false;\n        /**\n         *\n         * @type {number}\n         */\n        this.scrollNavigationOffset = 20; //main navigation scroll offset\n        /**\n         *\n         * @type {number}\n         */\n        this.previousTop = 0;\n        /**\n         *\n         * @type {number}\n         */\n        this.currentTop = 0;\n        /**\n         *\n         * @type {number}\n         */\n        this.scrollDelta = 0;\n        /**\n         *\n         * @type {number}\n         */\n        this.scrollOffset = 0;\n\n        /**\n         *\n         * @type {{} & {navigationSlideUp: string, navigation: string, activeClass: string, navigationScrolled: string, navigationHidden: string, navigationSlideDown: string, navigationFixed: string, } & Object}\n         */\n        this.defaults = Object.assign({}, _defaults, options);\n    }\n\n    //region getters\n    /**\n     *\n     * @returns {Element}\n     */\n    get navigation() {\n        return document.querySelector(this.defaults.navigation);\n    }\n\n    //endregion\n\n    //region methods\n    /**\n     *\n     */\n    init() {\n        console.log(\"Navigation init()\");\n\n        if (this.navigation) {\n            this.navigationController();\n        }\n    }\n\n    //NAVIGATION\n    /**\n     *\n     */\n    navigationController() {\n        document.addEventListener(\"scroll\", () => {\n            if (!this.scrolling) {\n                this.scrolling = true;\n\n                if (!window.requestAnimationFrame) {\n                    setTimeout(this.checkScroll(), 250);\n                } else {\n                    requestAnimationFrame(() => this.checkScroll());\n                }\n            }\n        });\n    }\n\n    /**\n     *\n     */\n    checkScroll() {\n        /**\n         *\n         * @type {number}\n         */\n        let currentTop = window.pageYOffset | document.body.scrollTop;\n\n        this.activateNavigation(currentTop);\n\n        this.previousTop = currentTop;\n        this.scrolling = false;\n    }\n\n    /**\n     *\n     * @param currentTop\n     */\n    activateNavigation(currentTop) {\n        if (currentTop > this.scrollNavigationOffset) {\n            this.navigation.classList.add(this.defaults.navigationScrolled);\n        } else {\n            this.navigation.classList.remove(this.defaults.navigationScrolled);\n        }\n\n        /**\n         *\n         * @type {number}\n         */\n        let navOffsetTop = window.innerHeight / 4;\n\n        if (this.previousTop >= currentTop) {\n            //SCROLLING UP\n            if (currentTop < navOffsetTop) {\n                //secondary nav is not fixed\n                this.navigation.classList.remove(\n                    this.defaults.navigationSlideUp,\n                );\n            } else if (this.previousTop - currentTop > this.scrollDelta) {\n                //secondary nav is fixed\n\n                this.navigation.classList.remove(\n                    this.defaults.navigationSlideUp,\n                );\n            }\n        } else {\n            //SCROLLING DOWN\n            if (currentTop > navOffsetTop + this.scrollOffset) {\n                //hide primary nav\n                this.navigation.classList.add(this.defaults.navigationSlideUp);\n            } else if (currentTop > navOffsetTop) {\n                //once the secondary nav is fixed, do not hide primary nav if you haven't scrolled more than scrollOffset\n                this.navigation.classList.remove(\n                    this.defaults.navigationSlideUp,\n                );\n            }\n        }\n    }\n\n    //endregion\n}\n",
+    "name": "components/CustomCursor.js",
+    "content": "import gsap from \"gsap\";\n\n/**\n * CustomCursor class\n */\nexport default class CustomCursor {\n    /**\n     *\n     * @param {object} options\n     */\n    constructor(options) {\n        const _defaults = {\n            //CURSOR\n            cursor: \".js-cursor\",\n            cursorFollower: \".js-cursor-follower\",\n            link: \".js-link\",\n            dragContainer: \".js-drag-container\",\n\n            //CSS state classes\n            activeClass: \"is-active\",\n            hoverClass: \"is-hovered\",\n            dragClass: \"is-drag\",\n            pressClass: \"is-pressed\",\n        };\n\n        this.defaults = Object.assign({}, _defaults, options);\n\n        if (this.cursor) {\n            this.init();\n        }\n    }\n\n    get cursor() {\n        return document.querySelector(this.defaults.cursor);\n    }\n\n    get cursorFollower() {\n        return document.querySelector(this.defaults.cursorFollower);\n    }\n\n    get links() {\n        return document.querySelectorAll(this.defaults.link);\n    }\n\n    get dragContainers() {\n        return document.querySelectorAll(this.defaults.dragContainer);\n    }\n\n    init() {\n        console.log(\"CustomCursor init()\");\n        this.cursorController();\n    }\n\n    //CURSOR\n    /**\n     *\n     */\n    cursorController() {\n        document.addEventListener(\"mousemove\", (ev) => {\n            this.onMouseMove(ev);\n        });\n\n        document.addEventListener(\"mousedown\", (ev) => {\n            this.onMouseDown(ev, this.defaults.pressClass);\n        });\n\n        document.addEventListener(\"mouseup\", (ev) => {\n            this.onMouseUp(ev, this.defaults.pressClass);\n        });\n\n        [...this.links].forEach((link) => {\n            link.addEventListener(\"mouseenter\", (ev) => {\n                this.onMouseEnter(ev, this.defaults.activeClass);\n            });\n\n            link.addEventListener(\"mouseleave\", (ev) => {\n                this.onMouseLeave(ev, this.defaults.activeClass);\n            });\n        });\n\n        [...this.dragContainers].forEach((dragContainer) => {\n            dragContainer.addEventListener(\"mouseenter\", (ev) => {\n                this.onMouseEnter(ev, this.defaults.dragClass);\n            });\n\n            dragContainer.addEventListener(\"mouseleave\", (ev) => {\n                this.onMouseLeave(ev, this.defaults.dragClass);\n            });\n        });\n    }\n\n    /**\n     *\n     * @param event\n     */\n    onMouseMove(event) {\n        gsap.to(this.cursor, 0.25, {\n            x: event.clientX,\n            y: event.clientY,\n        });\n\n        gsap.to(this.cursorFollower, 0.5, {\n            x: event.clientX,\n            y: event.clientY,\n            ease: \"power3.easeOut\",\n        });\n    }\n\n    /**\n     *\n     * @param event\n     * @param stateClass\n     */\n    onMouseEnter(event, stateClass) {\n        this.cursor.classList.add(stateClass);\n        this.cursorFollower.classList.add(stateClass);\n        event.currentTarget.classList.add(this.defaults.hoverClass);\n\n        gsap.to(this.cursorFollower, 0.25, {\n            scale: 1.25,\n            ease: \"power2.out\",\n        });\n    }\n\n    /**\n     *\n     * @param event\n     * @param stateClass\n     */\n    onMouseLeave(event, stateClass) {\n        this.cursor.classList.remove(stateClass);\n        this.cursorFollower.classList.remove(stateClass);\n        event.currentTarget.classList.remove(this.defaults.hoverClass);\n\n        gsap.to(this.cursorFollower, 0.25, {\n            scale: 1,\n            ease: \"power2.out\",\n        });\n    }\n\n    /**\n     *\n     * @param event\n     * @param stateClass\n     */\n    onMouseDown(event, stateClass) {\n        this.cursor.classList.add(stateClass);\n        this.cursorFollower.classList.add(stateClass);\n\n        gsap.to(this.cursorFollower, 0.25, {\n            scale: 0.7,\n            ease: \"power3.easeOut\",\n        });\n    }\n\n    /**\n     *\n     * @param event\n     * @param stateClass\n     */\n    onMouseUp(event, stateClass) {\n        this.cursor.classList.remove(stateClass);\n        this.cursorFollower.classList.remove(stateClass);\n\n        gsap.to(this.cursorFollower, 0.25, {\n            scale: 1,\n            ease: \"power3.easeOut\",\n        });\n    }\n}\n",
     "static": true,
-    "longname": "/Users/karlo/work/altered8/gulp4-boilerplate/static/js/components/NavigationController.js",
+    "longname": "/Users/Karlo/work/Altered8/web/altered8/static/js/components/CustomCursor.js",
     "access": "public",
     "description": null,
     "lineNumber": 1
   },
   {
-    "__docId__": 53,
+    "__docId__": 57,
     "kind": "class",
-    "name": "NavigationController",
-    "memberof": "components/NavigationController.js",
+    "name": "CustomCursor",
+    "memberof": "components/CustomCursor.js",
     "static": true,
-    "longname": "components/NavigationController.js~NavigationController",
+    "longname": "components/CustomCursor.js~CustomCursor",
     "access": "public",
     "export": true,
-    "importPath": "gulp4-boilerplate/components/NavigationController.js",
-    "importStyle": "NavigationController",
-    "description": "Navigation class",
-    "lineNumber": 4,
+    "importPath": "gulp4-boilerplate/components/CustomCursor.js",
+    "importStyle": "CustomCursor",
+    "description": "CustomCursor class",
+    "lineNumber": 6,
     "interface": false
   },
   {
-    "__docId__": 54,
+    "__docId__": 58,
     "kind": "constructor",
     "name": "constructor",
-    "memberof": "components/NavigationController.js~NavigationController",
+    "memberof": "components/CustomCursor.js~CustomCursor",
     "generator": false,
     "async": false,
     "static": false,
-    "longname": "components/NavigationController.js~NavigationController#constructor",
+    "longname": "components/CustomCursor.js~CustomCursor#constructor",
     "access": "public",
     "description": "",
-    "lineNumber": 9,
+    "lineNumber": 11,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "object"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "options",
+        "description": ""
+      }
+    ]
+  },
+  {
+    "__docId__": 59,
+    "kind": "member",
+    "name": "defaults",
+    "memberof": "components/CustomCursor.js~CustomCursor",
+    "static": false,
+    "longname": "components/CustomCursor.js~CustomCursor#defaults",
+    "access": "public",
+    "description": null,
+    "lineNumber": 26,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 60,
+    "kind": "get",
+    "name": "cursor",
+    "memberof": "components/CustomCursor.js~CustomCursor",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "components/CustomCursor.js~CustomCursor#cursor",
+    "access": "public",
+    "description": null,
+    "lineNumber": 33,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 61,
+    "kind": "get",
+    "name": "cursorFollower",
+    "memberof": "components/CustomCursor.js~CustomCursor",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "components/CustomCursor.js~CustomCursor#cursorFollower",
+    "access": "public",
+    "description": null,
+    "lineNumber": 37,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 62,
+    "kind": "get",
+    "name": "links",
+    "memberof": "components/CustomCursor.js~CustomCursor",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "components/CustomCursor.js~CustomCursor#links",
+    "access": "public",
+    "description": null,
+    "lineNumber": 41,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 63,
+    "kind": "get",
+    "name": "dragContainers",
+    "memberof": "components/CustomCursor.js~CustomCursor",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "components/CustomCursor.js~CustomCursor#dragContainers",
+    "access": "public",
+    "description": null,
+    "lineNumber": 45,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 64,
+    "kind": "method",
+    "name": "init",
+    "memberof": "components/CustomCursor.js~CustomCursor",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "components/CustomCursor.js~CustomCursor#init",
+    "access": "public",
+    "description": null,
+    "lineNumber": 49,
+    "undocument": true,
+    "params": [],
+    "return": null
+  },
+  {
+    "__docId__": 65,
+    "kind": "method",
+    "name": "cursorController",
+    "memberof": "components/CustomCursor.js~CustomCursor",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "components/CustomCursor.js~CustomCursor#cursorController",
+    "access": "public",
+    "description": "",
+    "lineNumber": 58,
+    "params": [],
+    "return": null
+  },
+  {
+    "__docId__": 66,
+    "kind": "method",
+    "name": "onMouseMove",
+    "memberof": "components/CustomCursor.js~CustomCursor",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "components/CustomCursor.js~CustomCursor#onMouseMove",
+    "access": "public",
+    "description": "",
+    "lineNumber": 96,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "*"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "event",
+        "description": ""
+      }
+    ],
+    "return": null
+  },
+  {
+    "__docId__": 67,
+    "kind": "method",
+    "name": "onMouseEnter",
+    "memberof": "components/CustomCursor.js~CustomCursor",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "components/CustomCursor.js~CustomCursor#onMouseEnter",
+    "access": "public",
+    "description": "",
+    "lineNumber": 114,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "*"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "event",
+        "description": ""
+      },
+      {
+        "nullable": null,
+        "types": [
+          "*"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "stateClass",
+        "description": ""
+      }
+    ],
+    "return": null
+  },
+  {
+    "__docId__": 68,
+    "kind": "method",
+    "name": "onMouseLeave",
+    "memberof": "components/CustomCursor.js~CustomCursor",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "components/CustomCursor.js~CustomCursor#onMouseLeave",
+    "access": "public",
+    "description": "",
+    "lineNumber": 130,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "*"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "event",
+        "description": ""
+      },
+      {
+        "nullable": null,
+        "types": [
+          "*"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "stateClass",
+        "description": ""
+      }
+    ],
+    "return": null
+  },
+  {
+    "__docId__": 69,
+    "kind": "method",
+    "name": "onMouseDown",
+    "memberof": "components/CustomCursor.js~CustomCursor",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "components/CustomCursor.js~CustomCursor#onMouseDown",
+    "access": "public",
+    "description": "",
+    "lineNumber": 146,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "*"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "event",
+        "description": ""
+      },
+      {
+        "nullable": null,
+        "types": [
+          "*"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "stateClass",
+        "description": ""
+      }
+    ],
+    "return": null
+  },
+  {
+    "__docId__": 70,
+    "kind": "method",
+    "name": "onMouseUp",
+    "memberof": "components/CustomCursor.js~CustomCursor",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "components/CustomCursor.js~CustomCursor#onMouseUp",
+    "access": "public",
+    "description": "",
+    "lineNumber": 161,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "*"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "event",
+        "description": ""
+      },
+      {
+        "nullable": null,
+        "types": [
+          "*"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "stateClass",
+        "description": ""
+      }
+    ],
+    "return": null
+  },
+  {
+    "__docId__": 71,
+    "kind": "file",
+    "name": "components/Loader.js",
+    "content": "import gsap from \"gsap\";\n/**\n * Loader class\n */\nexport default class Loader {\n    /**\n     *\n     * @param options\n     */\n    constructor(options) {\n        /**\n         *\n         * @type {{navigationSlideUp: string, navigation: string, activeClass: string, navigationScrolled: string, navigationFixed: string}}\n         * @private\n         */\n        let _defaults = {\n            //\n            loaderWrapper: \".js-loader-wrapper\",\n            loader: \".js-loader\",\n            background: \".js-background\",\n            loaderLayer: \".js-loader-layer\",\n            stagingLogo: \".js-staging-logo\",\n            stagingElement: \".js-staging-element\",\n        };\n\n        this.loaderTl = gsap.timeline({\n            paused: true,\n            // delay: 0.6,\n            onComplete: () => {\n                document.documentElement.classList.remove(\"is-locked\");\n                this.loaderWrapper.parentNode.removeChild(this.loaderWrapper);\n            },\n        });\n\n        //loader config\n        this.defaults = Object.assign({}, _defaults, options);\n\n        if (this.loader) {\n            this.init();\n            this.initLoader();\n        }\n    }\n\n    //region getters\n    /**\n     *\n     * @returns {Element}\n     */\n\n    get loaderWrapper() {\n        return document.querySelector(this.defaults.loaderWrapper);\n    }\n\n    get loader() {\n        return document.querySelector(this.defaults.loader);\n    }\n\n    get loaderLayers() {\n        return document.querySelectorAll(this.defaults.loaderLayer);\n    }\n\n    get stagingLogo() {\n        return document.querySelector(this.defaults.stagingLogo);\n    }\n\n    get stagingElements() {\n        return document.querySelectorAll(this.defaults.stagingElement);\n    }\n\n    get background() {\n        return document.querySelector(this.defaults.background);\n    }\n\n    //endregion\n\n    //region methods\n    /**\n     *\n     */\n    init() {\n        console.log(\"Navigation init()\");\n    }\n\n    //LOADER\n    /**\n     *\n     */\n    initLoader() {\n        const duration = 1.8;\n\n        this.loaderTl\n            .add(\"tlStart\")\n            .to(\n                this.loaderLayers,\n                {\n                    duration: duration,\n                    x: \"100%\",\n                    stagger: {\n                        each: 0.015,\n                        from: \"end\",\n                    },\n                    ease: \"power3.inOut\",\n                },\n                \"tlStart\",\n            )\n            .fromTo(\n                this.stagingElements,\n                {\n                    x: \"-75%\",\n                    skewX: \"-2.5deg\",\n                    autoAlpha: 0,\n                },\n                {\n                    duration: duration,\n                    autoAlpha: 1,\n                    x: \"0%\",\n                    skewX: \"0deg\",\n                    stagger: {\n                        each: 0.1,\n                        from: \"start\",\n                    },\n                    ease: \"power3.inOut\",\n                },\n                \"tlStart+=0.2\",\n            )\n            .fromTo(\n                this.stagingLogo,\n                {\n                    x: \"-25%\",\n                    skewX: \"-1.5deg\",\n                    autoAlpha: 0,\n                },\n                {\n                    duration: duration,\n                    autoAlpha: 1,\n                    x: \"0%\",\n                    skewX: \"0deg\",\n                    ease: \"power3.inOut\",\n                },\n                \"tlStart+=0.2\",\n            )\n            .fromTo(\n                this.background,\n                {\n                    scale: 1.25,\n                },\n                {\n                    scale: 1,\n                    duration: 2.2,\n                    ease: \"power3.inOut\",\n                },\n                \"tlStart\",\n            )\n            .fromTo(\n                this.loader,\n                {\n                    skewX: \"-1.5deg\",\n                },\n                {\n                    duration: duration,\n                    skewX: \"0deg\",\n                    ease: \"power3.inOut\",\n                },\n                \"tlStart\",\n            )\n            .to(this.loaderWrapper, {\n                duration: 0.2,\n                autoAlpha: 0,\n            });\n    }\n\n    playTimeline() {\n        this.loaderTl.play();\n    }\n    //endregion\n}\n",
+    "static": true,
+    "longname": "/Users/Karlo/work/Altered8/web/altered8/static/js/components/Loader.js",
+    "access": "public",
+    "description": null,
+    "lineNumber": 1
+  },
+  {
+    "__docId__": 72,
+    "kind": "class",
+    "name": "Loader",
+    "memberof": "components/Loader.js",
+    "static": true,
+    "longname": "components/Loader.js~Loader",
+    "access": "public",
+    "export": true,
+    "importPath": "gulp4-boilerplate/components/Loader.js",
+    "importStyle": "Loader",
+    "description": "Loader class",
+    "lineNumber": 5,
+    "interface": false
+  },
+  {
+    "__docId__": 73,
+    "kind": "constructor",
+    "name": "constructor",
+    "memberof": "components/Loader.js~Loader",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "components/Loader.js~Loader#constructor",
+    "access": "public",
+    "description": "",
+    "lineNumber": 10,
     "params": [
       {
         "nullable": null,
@@ -672,150 +1087,51 @@
     ]
   },
   {
-    "__docId__": 55,
+    "__docId__": 74,
     "kind": "member",
-    "name": "scrolling",
-    "memberof": "components/NavigationController.js~NavigationController",
+    "name": "loaderTl",
+    "memberof": "components/Loader.js~Loader",
     "static": false,
-    "longname": "components/NavigationController.js~NavigationController#scrolling",
+    "longname": "components/Loader.js~Loader#loaderTl",
     "access": "public",
-    "description": "",
-    "lineNumber": 33,
+    "description": null,
+    "lineNumber": 26,
+    "undocument": true,
     "type": {
-      "nullable": null,
       "types": [
-        "boolean"
-      ],
-      "spread": false,
-      "description": null
+        "*"
+      ]
     }
   },
   {
-    "__docId__": 56,
-    "kind": "member",
-    "name": "scrollNavigationOffset",
-    "memberof": "components/NavigationController.js~NavigationController",
-    "static": false,
-    "longname": "components/NavigationController.js~NavigationController#scrollNavigationOffset",
-    "access": "public",
-    "description": "",
-    "lineNumber": 38,
-    "type": {
-      "nullable": null,
-      "types": [
-        "number"
-      ],
-      "spread": false,
-      "description": null
-    }
-  },
-  {
-    "__docId__": 57,
-    "kind": "member",
-    "name": "previousTop",
-    "memberof": "components/NavigationController.js~NavigationController",
-    "static": false,
-    "longname": "components/NavigationController.js~NavigationController#previousTop",
-    "access": "public",
-    "description": "",
-    "lineNumber": 43,
-    "type": {
-      "nullable": null,
-      "types": [
-        "number"
-      ],
-      "spread": false,
-      "description": null
-    }
-  },
-  {
-    "__docId__": 58,
-    "kind": "member",
-    "name": "currentTop",
-    "memberof": "components/NavigationController.js~NavigationController",
-    "static": false,
-    "longname": "components/NavigationController.js~NavigationController#currentTop",
-    "access": "public",
-    "description": "",
-    "lineNumber": 48,
-    "type": {
-      "nullable": null,
-      "types": [
-        "number"
-      ],
-      "spread": false,
-      "description": null
-    }
-  },
-  {
-    "__docId__": 59,
-    "kind": "member",
-    "name": "scrollDelta",
-    "memberof": "components/NavigationController.js~NavigationController",
-    "static": false,
-    "longname": "components/NavigationController.js~NavigationController#scrollDelta",
-    "access": "public",
-    "description": "",
-    "lineNumber": 53,
-    "type": {
-      "nullable": null,
-      "types": [
-        "number"
-      ],
-      "spread": false,
-      "description": null
-    }
-  },
-  {
-    "__docId__": 60,
-    "kind": "member",
-    "name": "scrollOffset",
-    "memberof": "components/NavigationController.js~NavigationController",
-    "static": false,
-    "longname": "components/NavigationController.js~NavigationController#scrollOffset",
-    "access": "public",
-    "description": "",
-    "lineNumber": 58,
-    "type": {
-      "nullable": null,
-      "types": [
-        "number"
-      ],
-      "spread": false,
-      "description": null
-    }
-  },
-  {
-    "__docId__": 61,
+    "__docId__": 75,
     "kind": "member",
     "name": "defaults",
-    "memberof": "components/NavigationController.js~NavigationController",
+    "memberof": "components/Loader.js~Loader",
     "static": false,
-    "longname": "components/NavigationController.js~NavigationController#defaults",
+    "longname": "components/Loader.js~Loader#defaults",
     "access": "public",
-    "description": "",
-    "lineNumber": 64,
+    "description": null,
+    "lineNumber": 36,
+    "undocument": true,
     "type": {
-      "nullable": null,
       "types": [
-        "{"
-      ],
-      "spread": false,
-      "description": null
+        "*"
+      ]
     }
   },
   {
-    "__docId__": 62,
+    "__docId__": 76,
     "kind": "get",
-    "name": "navigation",
-    "memberof": "components/NavigationController.js~NavigationController",
+    "name": "loaderWrapper",
+    "memberof": "components/Loader.js~Loader",
     "generator": false,
     "async": false,
     "static": false,
-    "longname": "components/NavigationController.js~NavigationController#navigation",
+    "longname": "components/Loader.js~Loader#loaderWrapper",
     "access": "public",
     "description": "",
-    "lineNumber": 72,
+    "lineNumber": 50,
     "unknown": [
       {
         "tagName": "@returns",
@@ -837,7 +1153,475 @@
     }
   },
   {
-    "__docId__": 63,
+    "__docId__": 77,
+    "kind": "get",
+    "name": "loader",
+    "memberof": "components/Loader.js~Loader",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "components/Loader.js~Loader#loader",
+    "access": "public",
+    "description": null,
+    "lineNumber": 54,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 78,
+    "kind": "get",
+    "name": "loaderLayers",
+    "memberof": "components/Loader.js~Loader",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "components/Loader.js~Loader#loaderLayers",
+    "access": "public",
+    "description": null,
+    "lineNumber": 58,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 79,
+    "kind": "get",
+    "name": "stagingLogo",
+    "memberof": "components/Loader.js~Loader",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "components/Loader.js~Loader#stagingLogo",
+    "access": "public",
+    "description": null,
+    "lineNumber": 62,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 80,
+    "kind": "get",
+    "name": "stagingElements",
+    "memberof": "components/Loader.js~Loader",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "components/Loader.js~Loader#stagingElements",
+    "access": "public",
+    "description": null,
+    "lineNumber": 66,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 81,
+    "kind": "get",
+    "name": "background",
+    "memberof": "components/Loader.js~Loader",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "components/Loader.js~Loader#background",
+    "access": "public",
+    "description": null,
+    "lineNumber": 70,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 82,
+    "kind": "method",
+    "name": "init",
+    "memberof": "components/Loader.js~Loader",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "components/Loader.js~Loader#init",
+    "access": "public",
+    "description": "",
+    "lineNumber": 80,
+    "params": [],
+    "return": null
+  },
+  {
+    "__docId__": 83,
+    "kind": "method",
+    "name": "initLoader",
+    "memberof": "components/Loader.js~Loader",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "components/Loader.js~Loader#initLoader",
+    "access": "public",
+    "description": "",
+    "lineNumber": 88,
+    "params": [],
+    "return": null
+  },
+  {
+    "__docId__": 84,
+    "kind": "method",
+    "name": "playTimeline",
+    "memberof": "components/Loader.js~Loader",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "components/Loader.js~Loader#playTimeline",
+    "access": "public",
+    "description": null,
+    "lineNumber": 172,
+    "undocument": true,
+    "params": [],
+    "return": null
+  },
+  {
+    "__docId__": 85,
+    "kind": "file",
+    "name": "components/MobileMotion.js",
+    "content": "import gsap from \"gsap\";\n\nexport default class MobileMotion {\n    /**\n     *\n     * @param {object} options\n     */\n    constructor(options) {\n        const _defaults = {\n            mobileMotionLayer: \".js-mobile-motion-layer\",\n        };\n\n        this.defaults = Object.assign({}, _defaults, options);\n    }\n\n    get mobileMotionLayer() {\n        return document.querySelector(this.defaults.mobileMotionLayer);\n    }\n\n    init() {\n        console.log(\"MobileMotion init()\");\n\n        if (window.DeviceOrientationEvent) {\n            this.mobileMove();\n        }\n    }\n\n    mobileMove() {\n        window.addEventListener(\n            \"deviceorientation\",\n            (ev) => {\n                const deviceRotateX = ev.gamma.toFixed(2);\n                const deviceRotateY = ev.beta.toFixed(2);\n\n                gsap.to(this.mobileMotionLayer, {\n                    duration: 0.6,\n                    rotationY: 0.25 * deviceRotateX,\n                    x: 0.5 * deviceRotateX,\n                    y: 0.15 * deviceRotateY,\n                    ease: \"quad.out\",\n                    transformPerspective: 500,\n                    transformOrigin: \"center\",\n                });\n            },\n            false,\n        );\n    }\n}\n",
+    "static": true,
+    "longname": "/Users/Karlo/work/Altered8/web/altered8/static/js/components/MobileMotion.js",
+    "access": "public",
+    "description": null,
+    "lineNumber": 1
+  },
+  {
+    "__docId__": 86,
+    "kind": "class",
+    "name": "MobileMotion",
+    "memberof": "components/MobileMotion.js",
+    "static": true,
+    "longname": "components/MobileMotion.js~MobileMotion",
+    "access": "public",
+    "export": true,
+    "importPath": "gulp4-boilerplate/components/MobileMotion.js",
+    "importStyle": "MobileMotion",
+    "description": null,
+    "lineNumber": 3,
+    "undocument": true,
+    "interface": false
+  },
+  {
+    "__docId__": 87,
+    "kind": "constructor",
+    "name": "constructor",
+    "memberof": "components/MobileMotion.js~MobileMotion",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "components/MobileMotion.js~MobileMotion#constructor",
+    "access": "public",
+    "description": "",
+    "lineNumber": 8,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "object"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "options",
+        "description": ""
+      }
+    ]
+  },
+  {
+    "__docId__": 88,
+    "kind": "member",
+    "name": "defaults",
+    "memberof": "components/MobileMotion.js~MobileMotion",
+    "static": false,
+    "longname": "components/MobileMotion.js~MobileMotion#defaults",
+    "access": "public",
+    "description": null,
+    "lineNumber": 13,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 89,
+    "kind": "get",
+    "name": "mobileMotionLayer",
+    "memberof": "components/MobileMotion.js~MobileMotion",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "components/MobileMotion.js~MobileMotion#mobileMotionLayer",
+    "access": "public",
+    "description": null,
+    "lineNumber": 16,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 90,
+    "kind": "method",
+    "name": "init",
+    "memberof": "components/MobileMotion.js~MobileMotion",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "components/MobileMotion.js~MobileMotion#init",
+    "access": "public",
+    "description": null,
+    "lineNumber": 20,
+    "undocument": true,
+    "params": [],
+    "return": null
+  },
+  {
+    "__docId__": 91,
+    "kind": "method",
+    "name": "mobileMove",
+    "memberof": "components/MobileMotion.js~MobileMotion",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "components/MobileMotion.js~MobileMotion#mobileMove",
+    "access": "public",
+    "description": null,
+    "lineNumber": 28,
+    "undocument": true,
+    "params": [],
+    "return": null
+  },
+  {
+    "__docId__": 92,
+    "kind": "file",
+    "name": "components/NavigationController.js",
+    "content": "/**\n * \"smart\" navigation which goes off screen when scrolling down for a better overview of content and UX\n * navigation appears when scrolling up\n */\nexport default class NavigationController {\n    constructor() {\n        /**\n         * Navigation DOM selectors\n         * @type {{navigation: string}}\n         */\n        this.DOM = {\n            navigation: \".js-navigation-wrapper\",\n        };\n\n        /**\n         * Navigation state CSS classes\n         * @type {{navigationSlideUp: string, navigationScrolled: string, navigationFixed: string}}\n         */\n        this.states = {\n            navigationScrolled: \"has-scrolled\",\n            navigationFixed: \"is-fixed\",\n            navigationSlideUp: \"slide-up\",\n        };\n\n        /**\n         * flag, state variable for scrolling event\n         * @type {boolean}\n         */\n        this.scrolling = false;\n        /**\n         * amount of pixels to scroll from top for adding \"has-scrolled\" state class\n         * @type {number}\n         */\n        this.scrollNavigationOffset = 200;\n        /**\n         * variable for storing amount of scroll from top position value\n         * @type {number}\n         */\n        this.previousTop = 0;\n        /**\n         * variable for storing current scroll position value\n         * @type {number}\n         */\n        this.currentTop = 0;\n        this.scrollDelta = 0;\n        this.scrollOffset = 0;\n\n        /**\n         * fetch navigation element DOM element\n         * @type {Element}\n         */\n        this.navigation = document.querySelector(this.DOM.navigation);\n    }\n\n    //region methods\n    /**\n     *\n     */\n    init() {\n        console.log(\"Navigation init()\");\n\n        if (this.navigation !== null) {\n            this.navigationController();\n        } else {\n            console.error(`${this.DOM.navigation} does not exist in the DOM!`);\n        }\n    }\n\n    /**\n     *\n     */\n    navigationController() {\n        document.addEventListener(\"scroll\", () => {\n            if (!this.scrolling) {\n                this.scrolling = true;\n\n                if (!window.requestAnimationFrame) {\n                    setTimeout(this.checkScroll(), 250);\n                } else {\n                    requestAnimationFrame(() => this.checkScroll());\n                }\n            }\n        });\n    }\n\n    /**\n     *\n     */\n    checkScroll() {\n        /**\n         *\n         * @type {number}\n         */\n        let currentTop = window.pageYOffset | document.body.scrollTop;\n\n        this.changeNavigationState(currentTop);\n\n        this.previousTop = currentTop;\n        this.scrolling = false;\n    }\n\n    /**\n     *\n     * @param currentTop\n     */\n    changeNavigationState(currentTop) {\n        if (currentTop > this.scrollNavigationOffset) {\n            this.navigation.classList.add(this.states.navigationScrolled);\n        } else {\n            this.navigation.classList.remove(this.states.navigationScrolled);\n        }\n\n        if (this.previousTop >= currentTop) {\n            //SCROLLING UP\n            if (currentTop < this.scrollNavigationOffset) {\n                this.navigation.classList.remove(this.states.navigationSlideUp);\n            } else if (this.previousTop - currentTop > this.scrollDelta) {\n                this.navigation.classList.remove(this.states.navigationSlideUp);\n            }\n        } else {\n            //SCROLLING DOWN\n            if (currentTop > this.scrollNavigationOffset + this.scrollOffset) {\n                this.navigation.classList.add(this.states.navigationSlideUp);\n            } else if (currentTop > this.scrollNavigationOffset) {\n                this.navigation.classList.remove(this.states.navigationSlideUp);\n            }\n        }\n    }\n\n    //endregion\n}\n",
+    "static": true,
+    "longname": "/Users/Karlo/work/Altered8/web/altered8/static/js/components/NavigationController.js",
+    "access": "public",
+    "description": null,
+    "lineNumber": 1
+  },
+  {
+    "__docId__": 93,
+    "kind": "class",
+    "name": "NavigationController",
+    "memberof": "components/NavigationController.js",
+    "static": true,
+    "longname": "components/NavigationController.js~NavigationController",
+    "access": "public",
+    "export": true,
+    "importPath": "gulp4-boilerplate/components/NavigationController.js",
+    "importStyle": "NavigationController",
+    "description": "\"smart\" navigation which goes off screen when scrolling down for a better overview of content and UX\nnavigation appears when scrolling up",
+    "lineNumber": 5,
+    "interface": false
+  },
+  {
+    "__docId__": 94,
+    "kind": "constructor",
+    "name": "constructor",
+    "memberof": "components/NavigationController.js~NavigationController",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "components/NavigationController.js~NavigationController#constructor",
+    "access": "public",
+    "description": null,
+    "lineNumber": 6,
+    "undocument": true
+  },
+  {
+    "__docId__": 95,
+    "kind": "member",
+    "name": "DOM",
+    "memberof": "components/NavigationController.js~NavigationController",
+    "static": false,
+    "longname": "components/NavigationController.js~NavigationController#DOM",
+    "access": "public",
+    "description": "Navigation DOM selectors",
+    "lineNumber": 11,
+    "type": {
+      "nullable": null,
+      "types": [
+        "{navigation: string}"
+      ],
+      "spread": false,
+      "description": null
+    }
+  },
+  {
+    "__docId__": 96,
+    "kind": "member",
+    "name": "states",
+    "memberof": "components/NavigationController.js~NavigationController",
+    "static": false,
+    "longname": "components/NavigationController.js~NavigationController#states",
+    "access": "public",
+    "description": "Navigation state CSS classes",
+    "lineNumber": 19,
+    "type": {
+      "nullable": null,
+      "types": [
+        "{navigationSlideUp: string, navigationScrolled: string, navigationFixed: string}"
+      ],
+      "spread": false,
+      "description": null
+    }
+  },
+  {
+    "__docId__": 97,
+    "kind": "member",
+    "name": "scrolling",
+    "memberof": "components/NavigationController.js~NavigationController",
+    "static": false,
+    "longname": "components/NavigationController.js~NavigationController#scrolling",
+    "access": "public",
+    "description": "flag, state variable for scrolling event",
+    "lineNumber": 29,
+    "type": {
+      "nullable": null,
+      "types": [
+        "boolean"
+      ],
+      "spread": false,
+      "description": null
+    }
+  },
+  {
+    "__docId__": 98,
+    "kind": "member",
+    "name": "scrollNavigationOffset",
+    "memberof": "components/NavigationController.js~NavigationController",
+    "static": false,
+    "longname": "components/NavigationController.js~NavigationController#scrollNavigationOffset",
+    "access": "public",
+    "description": "amount of pixels to scroll from top for adding \"has-scrolled\" state class",
+    "lineNumber": 34,
+    "type": {
+      "nullable": null,
+      "types": [
+        "number"
+      ],
+      "spread": false,
+      "description": null
+    }
+  },
+  {
+    "__docId__": 99,
+    "kind": "member",
+    "name": "previousTop",
+    "memberof": "components/NavigationController.js~NavigationController",
+    "static": false,
+    "longname": "components/NavigationController.js~NavigationController#previousTop",
+    "access": "public",
+    "description": "variable for storing amount of scroll from top position value",
+    "lineNumber": 39,
+    "type": {
+      "nullable": null,
+      "types": [
+        "number"
+      ],
+      "spread": false,
+      "description": null
+    }
+  },
+  {
+    "__docId__": 100,
+    "kind": "member",
+    "name": "currentTop",
+    "memberof": "components/NavigationController.js~NavigationController",
+    "static": false,
+    "longname": "components/NavigationController.js~NavigationController#currentTop",
+    "access": "public",
+    "description": "variable for storing current scroll position value",
+    "lineNumber": 44,
+    "type": {
+      "nullable": null,
+      "types": [
+        "number"
+      ],
+      "spread": false,
+      "description": null
+    }
+  },
+  {
+    "__docId__": 101,
+    "kind": "member",
+    "name": "scrollDelta",
+    "memberof": "components/NavigationController.js~NavigationController",
+    "static": false,
+    "longname": "components/NavigationController.js~NavigationController#scrollDelta",
+    "access": "public",
+    "description": null,
+    "lineNumber": 45,
+    "undocument": true,
+    "type": {
+      "types": [
+        "number"
+      ]
+    }
+  },
+  {
+    "__docId__": 102,
+    "kind": "member",
+    "name": "scrollOffset",
+    "memberof": "components/NavigationController.js~NavigationController",
+    "static": false,
+    "longname": "components/NavigationController.js~NavigationController#scrollOffset",
+    "access": "public",
+    "description": null,
+    "lineNumber": 46,
+    "undocument": true,
+    "type": {
+      "types": [
+        "number"
+      ]
+    }
+  },
+  {
+    "__docId__": 103,
+    "kind": "member",
+    "name": "navigation",
+    "memberof": "components/NavigationController.js~NavigationController",
+    "static": false,
+    "longname": "components/NavigationController.js~NavigationController#navigation",
+    "access": "public",
+    "description": "fetch navigation element DOM element",
+    "lineNumber": 52,
+    "type": {
+      "nullable": null,
+      "types": [
+        "Element"
+      ],
+      "spread": false,
+      "description": null
+    }
+  },
+  {
+    "__docId__": 104,
     "kind": "method",
     "name": "init",
     "memberof": "components/NavigationController.js~NavigationController",
@@ -847,12 +1631,12 @@
     "longname": "components/NavigationController.js~NavigationController#init",
     "access": "public",
     "description": "",
-    "lineNumber": 82,
+    "lineNumber": 59,
     "params": [],
     "return": null
   },
   {
-    "__docId__": 64,
+    "__docId__": 105,
     "kind": "method",
     "name": "navigationController",
     "memberof": "components/NavigationController.js~NavigationController",
@@ -862,12 +1646,12 @@
     "longname": "components/NavigationController.js~NavigationController#navigationController",
     "access": "public",
     "description": "",
-    "lineNumber": 94,
+    "lineNumber": 72,
     "params": [],
     "return": null
   },
   {
-    "__docId__": 66,
+    "__docId__": 107,
     "kind": "method",
     "name": "checkScroll",
     "memberof": "components/NavigationController.js~NavigationController",
@@ -877,22 +1661,22 @@
     "longname": "components/NavigationController.js~NavigationController#checkScroll",
     "access": "public",
     "description": "",
-    "lineNumber": 111,
+    "lineNumber": 89,
     "params": [],
     "return": null
   },
   {
-    "__docId__": 69,
+    "__docId__": 110,
     "kind": "method",
-    "name": "activateNavigation",
+    "name": "changeNavigationState",
     "memberof": "components/NavigationController.js~NavigationController",
     "generator": false,
     "async": false,
     "static": false,
-    "longname": "components/NavigationController.js~NavigationController#activateNavigation",
+    "longname": "components/NavigationController.js~NavigationController#changeNavigationState",
     "access": "public",
     "description": "",
-    "lineNumber": 128,
+    "lineNumber": 106,
     "params": [
       {
         "nullable": null,
@@ -909,16 +1693,16 @@
   },
   {
     "kind": "index",
-    "content": "# Gulp based build system\n\n- [Gulp](https://gulpjs.com/) 4 used\n- [browsersync](https://browsersync.io/) for live reload\n\n#### (S)CSS\n\n- based on **ITCSS** architecture (read about it [here](https://www.xfive.co/blog/itcss-scalable-maintainable-css-architecture/)) and inspired by [inuitcss framework](https://github.com/inuitcss/inuitcss)\n- sassbox (scss functions/mixins module)is installed by default, but it's not imported in main style.scss file. For docs and installation, [read this](https://github.com/degordian/sassbox).\n- uses postcss by default - autoprefixer will automatically add vendor prefixes by [browserslist ruleset defined inside package.json](https://github.com/postcss/autoprefixer#browsers)\n\n#### Scripts\n\n```bash\nnpm run dev - dev environent with browsersync\nnpm run build - build production\nnpm run build:analyze - builds production creates an informational page about your js bundles\n```\n\n## License\n\nMIT\n",
-    "longname": "/Users/karlo/work/altered8/gulp4-boilerplate/README.md",
+    "content": "# Altered8 — web\n\n#### Build system\n\n- [Gulp](https://gulpjs.com/) 4 used\n- [browsersync](https://browsersync.io/) for live reload\n\n#### (S)CSS\n\n- based on **ITCSS** architecture (read about it [here](https://www.xfive.co/blog/itcss-scalable-maintainable-css-architecture/)) and inspired by [inuitcss framework](https://github.com/inuitcss/inuitcss)\n- sassbox (scss functions/mixins module)is installed by default, but it's not imported in main style.scss file. For docs and installation, [read this](https://github.com/degordian/sassbox).\n- uses postcss by default - autoprefixer will automatically add vendor prefixes by [browserslist ruleset defined inside package.json](https://github.com/postcss/autoprefixer#browsers)\n\n#### Scripts\n\n```bash\nnpm run dev - dev environent with browsersync\nnpm run build - build production\nnpm run build:analyze - builds production creates an informational page about your js bundles\n```\n\n## License\n\nMIT\n",
+    "longname": "/Users/Karlo/work/Altered8/web/altered8/README.md",
     "name": "./README.md",
     "static": true,
     "access": "public"
   },
   {
     "kind": "packageJSON",
-    "content": "{\n    \"name\": \"gulp4-boilerplate\",\n    \"version\": \"0.1.0\",\n    \"description\": \"Altered 8 frontend project template based on gulp, es6 and scss\",\n    \"author\": \"Altered 8\",\n    \"email\": \"info@altrd8.com\",\n    \"private\": true,\n    \"engines\": {\n        \"node\": \">=12.16.1\",\n        \"npm\": \">=6.14.2\"\n    },\n    \"scripts\": {\n        \"build\": \"gulp build\",\n        \"dev\": \"gulp\",\n        \"esdoc\": \"./node_modules/.bin/esdoc\",\n        \"format\": \"prettier --write \\\"static/**/*.{scss,js}\\\"\",\n        \"lint:scss\": \"stylelint 'static/**/*.scss'\"\n    },\n    \"repository\": {\n        \"type\": \"git\",\n        \"url\": \"\"\n    },\n    \"browserslist\": [\n        \"> 0.5%\",\n        \"last 2 versions\"\n    ],\n    \"devDependencies\": {\n        \"@babel/core\": \"^7.8.7\",\n        \"@babel/plugin-proposal-class-properties\": \"^7.8.3\",\n        \"@babel/plugin-proposal-object-rest-spread\": \"^7.8.3\",\n        \"@babel/plugin-syntax-dynamic-import\": \"^7.8.3\",\n        \"@babel/preset-env\": \"^7.8.7\",\n        \"@babel/register\": \"^7.8.6\",\n        \"@namics/stylelint-bem\": \"^6.3.0\",\n        \"babelify\": \"^10.0.0\",\n        \"browser-sync\": \"^2.26.7\",\n        \"browserify\": \"^16.5.0\",\n        \"del\": \"^5.1.0\",\n        \"esdoc\": \"^1.1.0\",\n        \"esdoc-standard-plugin\": \"^1.0.0\",\n        \"eslint\": \"^6.8.0\",\n        \"eslint-config-prettier\": \"^6.10.0\",\n        \"eslint-plugin-prettier\": \"^3.1.2\",\n        \"esm\": \"^3.2.25\",\n        \"gulp\": \"^4.0.2\",\n        \"gulp-autoprefixer\": \"^7.0.1\",\n        \"gulp-babel\": \"^8.0.0\",\n        \"gulp-clean-css\": \"^4.2.0\",\n        \"gulp-concat\": \"^2.6.1\",\n        \"gulp-rename\": \"^2.0.0\",\n        \"gulp-sass\": \"^4.0.2\",\n        \"gulp-sourcemaps\": \"^2.6.5\",\n        \"gulp-uglify\": \"^3.0.2\",\n        \"prettier\": \"^1.19.1\",\n        \"stylelint\": \"^13.2.1\",\n        \"stylelint-config-prettier\": \"^8.0.1\",\n        \"stylelint-prettier\": \"^1.1.2\",\n        \"stylelint-scss\": \"^3.15.0\",\n        \"vinyl-buffer\": \"^1.0.1\",\n        \"vinyl-source-stream\": \"^2.0.0\"\n    },\n    \"dependencies\": {\n        \"gsap\": \"^3.2.4\",\n        \"poly-fluid-sizing\": \"^1.1.0\"\n    }\n}\n",
-    "longname": "/Users/karlo/work/altered8/gulp4-boilerplate/package.json",
+    "content": "{\n    \"name\": \"gulp4-boilerplate\",\n    \"version\": \"0.1.0\",\n    \"description\": \"Altered 8 frontend project template based on gulp, es6 and scss\",\n    \"author\": \"Altered 8\",\n    \"email\": \"info@altrd8.com\",\n    \"private\": true,\n    \"engines\": {\n        \"node\": \">=12.16.1\",\n        \"npm\": \">=6.14.2\"\n    },\n    \"scripts\": {\n        \"build\": \"gulp build\",\n        \"dev\": \"gulp\",\n        \"esdoc\": \"./node_modules/.bin/esdoc\",\n        \"format\": \"prettier --write \\\"static/**/*.{scss,js}\\\"\",\n        \"lint:scss\": \"stylelint 'static/**/*.scss'\"\n    },\n    \"repository\": {\n        \"type\": \"git\",\n        \"url\": \"\"\n    },\n    \"browserslist\": [\n        \"> 0.5%\",\n        \"last 2 versions\"\n    ],\n    \"devDependencies\": {\n        \"@babel/core\": \"^7.8.7\",\n        \"@babel/plugin-proposal-class-properties\": \"^7.8.3\",\n        \"@babel/plugin-proposal-object-rest-spread\": \"^7.8.3\",\n        \"@babel/plugin-syntax-dynamic-import\": \"^7.8.3\",\n        \"@babel/preset-env\": \"^7.8.7\",\n        \"@babel/register\": \"^7.8.6\",\n        \"@namics/stylelint-bem\": \"^6.3.0\",\n        \"babelify\": \"^10.0.0\",\n        \"browser-sync\": \"^2.26.7\",\n        \"browserify\": \"^16.5.0\",\n        \"del\": \"^5.1.0\",\n        \"esdoc\": \"^1.1.0\",\n        \"esdoc-standard-plugin\": \"^1.0.0\",\n        \"eslint\": \"^6.8.0\",\n        \"eslint-config-prettier\": \"^6.10.0\",\n        \"eslint-plugin-prettier\": \"^3.1.2\",\n        \"esm\": \"^3.2.25\",\n        \"gulp\": \"^4.0.2\",\n        \"gulp-autoprefixer\": \"^7.0.1\",\n        \"gulp-babel\": \"^8.0.0\",\n        \"gulp-clean-css\": \"^4.2.0\",\n        \"gulp-concat\": \"^2.6.1\",\n        \"gulp-rename\": \"^2.0.0\",\n        \"gulp-sass\": \"^4.0.2\",\n        \"gulp-sourcemaps\": \"^2.6.5\",\n        \"gulp-uglify\": \"^3.0.2\",\n        \"prettier\": \"^1.19.1\",\n        \"stylelint\": \"^13.2.1\",\n        \"stylelint-config-prettier\": \"^8.0.1\",\n        \"stylelint-prettier\": \"^1.1.2\",\n        \"stylelint-scss\": \"^3.15.0\",\n        \"vinyl-buffer\": \"^1.0.1\",\n        \"vinyl-source-stream\": \"^2.0.0\"\n    },\n    \"dependencies\": {\n        \"gsap\": \"^3.2.4\",\n        \"mailgo\": \"^0.8.5\",\n        \"pixi.js\": \"^5.2.1\",\n        \"poly-fluid-sizing\": \"^1.1.0\"\n    }\n}\n",
+    "longname": "/Users/Karlo/work/Altered8/web/altered8/package.json",
     "name": "package.json",
     "static": true,
     "access": "public"
