@@ -1,6 +1,8 @@
 import * as PIXI from "pixi.js";
 import gsap from "gsap";
 
+window.PIXI = PIXI;
+
 export default class Background {
     constructor(options) {
         let _defaults = {
@@ -35,13 +37,13 @@ export default class Background {
         console.log("Background init()");
 
         let rt = [],
+            bg,
             bgs = [],
             rts = [],
             containers = [],
             channelsContainer = [],
             displacementFilters = [],
             brushes = [];
-        let brush, displacementFilter, bg;
 
         // CHANNEL FILTERS
         let redChannelFilter = new PIXI.filters.ColorMatrixFilter();
@@ -139,15 +141,17 @@ export default class Background {
             );
             rts.push(rt);
         }
-        var current = 0;
 
         // CONTAINERS //
-        var containerRed = new PIXI.Container();
+        let containerRed = new PIXI.Container();
         containerRed.position.x = 0;
-        var containerGreen = new PIXI.Container();
+
+        let containerGreen = new PIXI.Container();
         containerGreen.position.x = 0;
-        var containerBlue = new PIXI.Container();
+
+        let containerBlue = new PIXI.Container();
         containerBlue.position.x = 0;
+
         containers.push(containerRed, containerGreen, containerBlue);
 
         // LOAD TEXTURES //

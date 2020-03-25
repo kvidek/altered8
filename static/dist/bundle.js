@@ -50582,6 +50582,8 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
+window.PIXI = PIXI;
+
 var Background = /*#__PURE__*/function () {
   function Background(options) {
     _classCallCheck(this, Background);
@@ -50607,13 +50609,13 @@ var Background = /*#__PURE__*/function () {
 
       console.log("Background init()");
       var rt = [],
+          bg,
           bgs = [],
           rts = [],
           containers = [],
           channelsContainer = [],
           displacementFilters = [],
-          brushes = [];
-      var brush, displacementFilter, bg; // CHANNEL FILTERS
+          brushes = []; // CHANNEL FILTERS
 
       var redChannelFilter = new PIXI.filters.ColorMatrixFilter();
       redChannelFilter.matrix = [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0];
@@ -50635,9 +50637,8 @@ var Background = /*#__PURE__*/function () {
       for (var i = 0; i < 3; i++) {
         rt.push(PIXI.RenderTexture.create(app.screen.width, app.screen.height));
         rts.push(rt);
-      }
+      } // CONTAINERS //
 
-      var current = 0; // CONTAINERS //
 
       var containerRed = new PIXI.Container();
       containerRed.position.x = 0;
