@@ -1,4 +1,4 @@
-import 'mailgo';
+import "mailgo";
 
 import CustomCursor from "./components/CustomCursor";
 import MobileMotion from "./components/MobileMotion";
@@ -27,6 +27,19 @@ function ready(callbackFunc) {
             }
         });
     }
+
+    var consoleLogStyle = [
+        "background-color: #000000",
+        "color: white",
+        "display: block",
+        "line-height: 24px",
+        "text-align: center",
+        "border: 1px solid #ffffff",
+        "border-radius: 3px",
+        "font-weight: bold",
+    ].join(";");
+
+    console.log("dev by: %c ALTRD ∞ ", consoleLogStyle);
 }
 
 /**
