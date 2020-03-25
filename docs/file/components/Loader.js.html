@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <base data-ice="baseUrl" href="../../">
+  <title data-ice="title">components/Loader.js | gulp4-boilerplate</title>
+  <link type="text/css" rel="stylesheet" href="css/style.css">
+  <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
+  <script src="script/prettify/prettify.js"></script>
+  <script src="script/manual.js"></script>
+<meta name="description" content="Altered 8 frontend project template based on gulp, es6 and scss"><meta property="twitter:card" content="summary"><meta property="twitter:title" content="gulp4-boilerplate"><meta property="twitter:description" content="Altered 8 frontend project template based on gulp, es6 and scss"></head>
+<body class="layout-container" data-ice="rootContainer">
+
+<header>
+  <a href="./">Home</a>
+  
+  <a href="identifiers.html">Reference</a>
+  <a href="source.html">Source</a>
+  
+  <div class="search-box">
+  <span>
+    <img src="./image/search.png">
+    <span class="search-input-edge"></span><input class="search-input"><span class="search-input-edge"></span>
+  </span>
+    <ul class="search-result"></ul>
+  </div>
+</header>
+
+<nav class="navigation" data-ice="nav"><div>
+  <ul>
+    
+  <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/components/Background.js~Background.html">Background</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/components/CustomCursor.js~CustomCursor.html">CustomCursor</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/components/Loader.js~Loader.html">Loader</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/components/MobileMotion.js~MobileMotion.html">MobileMotion</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/components/NavigationController.js~NavigationController.html">NavigationController</a></span></span></li>
+</ul>
+</div>
+</nav>
+
+<div class="content" data-ice="content"><h1 data-ice="title">components/Loader.js</h1>
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import gsap from &quot;gsap&quot;;
+/**
+ * Loader class
+ */
+export default class Loader {
+    /**
+     *
+     * @param options
+     */
+    constructor(options) {
+        /**
+         *
+         * @type {{navigationSlideUp: string, navigation: string, activeClass: string, navigationScrolled: string, navigationFixed: string}}
+         * @private
+         */
+        let _defaults = {
+            //
+            loaderWrapper: &quot;.js-loader-wrapper&quot;,
+            loader: &quot;.js-loader&quot;,
+            background: &quot;.js-background&quot;,
+            loaderLayer: &quot;.js-loader-layer&quot;,
+            stagingLogo: &quot;.js-staging-logo&quot;,
+            stagingElement: &quot;.js-staging-element&quot;,
+        };
+
+        this.loaderTl = gsap.timeline({
+            paused: true,
+            // delay: 0.6,
+            onComplete: () =&gt; {
+                document.documentElement.classList.remove(&quot;is-locked&quot;);
+                this.loaderWrapper.parentNode.removeChild(this.loaderWrapper);
+            },
+        });
+
+        //loader config
+        this.defaults = Object.assign({}, _defaults, options);
+
+        if (this.loader) {
+            this.init();
+            this.initLoader();
+        }
+    }
+
+    //region getters
+    /**
+     *
+     * @returns {Element}
+     */
+
+    get loaderWrapper() {
+        return document.querySelector(this.defaults.loaderWrapper);
+    }
+
+    get loader() {
+        return document.querySelector(this.defaults.loader);
+    }
+
+    get loaderLayers() {
+        return document.querySelectorAll(this.defaults.loaderLayer);
+    }
+
+    get stagingLogo() {
+        return document.querySelector(this.defaults.stagingLogo);
+    }
+
+    get stagingElements() {
+        return document.querySelectorAll(this.defaults.stagingElement);
+    }
+
+    get background() {
+        return document.querySelector(this.defaults.background);
+    }
+
+    //endregion
+
+    //region methods
+    /**
+     *
+     */
+    init() {
+        console.log(&quot;Navigation init()&quot;);
+    }
+
+    //LOADER
+    /**
+     *
+     */
+    initLoader() {
+        const duration = 1.8;
+
+        this.loaderTl
+            .add(&quot;tlStart&quot;)
+            .to(
+                this.loaderLayers,
+                {
+                    duration: duration,
+                    x: &quot;100%&quot;,
+                    stagger: {
+                        each: 0.015,
+                        from: &quot;end&quot;,
+                    },
+                    ease: &quot;power3.inOut&quot;,
+                },
+                &quot;tlStart&quot;,
+            )
+            .fromTo(
+                this.stagingElements,
+                {
+                    x: &quot;-75%&quot;,
+                    skewX: &quot;-2.5deg&quot;,
+                    autoAlpha: 0,
+                },
+                {
+                    duration: duration,
+                    autoAlpha: 1,
+                    x: &quot;0%&quot;,
+                    skewX: &quot;0deg&quot;,
+                    stagger: {
+                        each: 0.1,
+                        from: &quot;start&quot;,
+                    },
+                    ease: &quot;power3.inOut&quot;,
+                },
+                &quot;tlStart+=0.2&quot;,
+            )
+            .fromTo(
+                this.stagingLogo,
+                {
+                    x: &quot;-25%&quot;,
+                    skewX: &quot;-1.5deg&quot;,
+                    autoAlpha: 0,
+                },
+                {
+                    duration: duration,
+                    autoAlpha: 1,
+                    x: &quot;0%&quot;,
+                    skewX: &quot;0deg&quot;,
+                    ease: &quot;power3.inOut&quot;,
+                },
+                &quot;tlStart+=0.2&quot;,
+            )
+            .fromTo(
+                this.background,
+                {
+                    scale: 1.25,
+                },
+                {
+                    scale: 1,
+                    duration: 2.2,
+                    ease: &quot;power3.inOut&quot;,
+                },
+                &quot;tlStart&quot;,
+            )
+            .fromTo(
+                this.loader,
+                {
+                    skewX: &quot;-1.5deg&quot;,
+                },
+                {
+                    duration: duration,
+                    skewX: &quot;0deg&quot;,
+                    ease: &quot;power3.inOut&quot;,
+                },
+                &quot;tlStart&quot;,
+            )
+            .to(this.loaderWrapper, {
+                duration: 0.2,
+                autoAlpha: 0,
+            });
+    }
+
+    playTimeline() {
+        this.loaderTl.play();
+    }
+    //endregion
+}
+</code></pre>
+
+</div>
+
+<footer class="footer">
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(1.1.0)</span><img src="./image/esdoc-logo-mini-black.png"></a>
+</footer>
+
+<script src="script/search_index.js"></script>
+<script src="script/search.js"></script>
+<script src="script/pretty-print.js"></script>
+<script src="script/inherited-summary.js"></script>
+<script src="script/test-summary.js"></script>
+<script src="script/inner-link.js"></script>
+<script src="script/patch-for-local.js"></script>
+</body>
+</html>
