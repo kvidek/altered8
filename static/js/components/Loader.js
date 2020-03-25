@@ -1,20 +1,15 @@
 import gsap from "gsap";
+
 /**
  * Loader class
  */
 export default class Loader {
-    /**
-     *
-     * @param options
-     */
-    constructor(options) {
+    constructor() {
         /**
          *
-         * @type {{navigationSlideUp: string, navigation: string, activeClass: string, navigationScrolled: string, navigationFixed: string}}
-         * @private
+         * @type {{loader: string, background: string, stagingLogo: string, loaderWrapper: string, stagingElement: string, loaderLayer: string}}
          */
-        let _defaults = {
-            //
+        this.DOM = {
             loaderWrapper: ".js-loader-wrapper",
             loader: ".js-loader",
             background: ".js-background",
@@ -22,6 +17,20 @@ export default class Loader {
             stagingLogo: ".js-staging-logo",
             stagingElement: ".js-staging-element",
         };
+
+        this.loaderWrapper = document.querySelector(this.DOM.loaderWrapper);
+
+        this.loader = document.querySelector(this.DOM.loader);
+
+        this.loaderLayers = document.querySelectorAll(this.DOM.loaderLayer);
+
+        this.stagingLogo = document.querySelector(this.DOM.stagingLogo);
+
+        this.stagingElements = document.querySelectorAll(
+            this.DOM.stagingElement,
+        );
+
+        this.background = document.querySelector(this.DOM.background);
 
         this.loaderTl = gsap.timeline({
             paused: true,
@@ -31,57 +40,20 @@ export default class Loader {
                 this.loaderWrapper.parentNode.removeChild(this.loaderWrapper);
             },
         });
+    }
 
-        //loader config
-        this.defaults = Object.assign({}, _defaults, options);
+    init() {
+        console.log("Navigation init()");
 
-        if (this.loader) {
-            this.init();
+        if (this.loaderWrapper != null) {
             this.initLoader();
+        } else {
+            console.error(
+                `${this.DOM.loaderWrapper} does not exist in the DOM!`,
+            );
         }
     }
 
-    //region getters
-    /**
-     *
-     * @returns {Element}
-     */
-
-    get loaderWrapper() {
-        return document.querySelector(this.defaults.loaderWrapper);
-    }
-
-    get loader() {
-        return document.querySelector(this.defaults.loader);
-    }
-
-    get loaderLayers() {
-        return document.querySelectorAll(this.defaults.loaderLayer);
-    }
-
-    get stagingLogo() {
-        return document.querySelector(this.defaults.stagingLogo);
-    }
-
-    get stagingElements() {
-        return document.querySelectorAll(this.defaults.stagingElement);
-    }
-
-    get background() {
-        return document.querySelector(this.defaults.background);
-    }
-
-    //endregion
-
-    //region methods
-    /**
-     *
-     */
-    init() {
-        console.log("Navigation init()");
-    }
-
-    //LOADER
     /**
      *
      */
@@ -167,6 +139,8 @@ export default class Loader {
                 duration: 0.2,
                 autoAlpha: 0,
             });
+
+        this.playTimeline();
     }
 
     playTimeline() {

@@ -34,12 +34,13 @@ function ready(callbackFunc) {
  */
 ready(function() {
     const cursor = new CustomCursor();
+    cursor.init();
 
     const mobileMotion = new MobileMotion();
     mobileMotion.init();
 
     const loader = new Loader();
-    loader.playTimeline();
+    loader.init();
 
     const background = new Background();
     background.init();

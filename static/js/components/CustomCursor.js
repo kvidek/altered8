@@ -4,51 +4,54 @@ import gsap from "gsap";
  * CustomCursor class
  */
 export default class CustomCursor {
-    /**
-     *
-     * @param {object} options
-     */
-    constructor(options) {
-        const _defaults = {
-            //CURSOR
+    constructor() {
+        /**
+         * Cursor DOM selectors
+         * @type {{cursor: string, cursorFollower: string, link: string}}
+         */
+        this.DOM = {
             cursor: ".js-cursor",
             cursorFollower: ".js-cursor-follower",
             link: ".js-link",
-            dragContainer: ".js-drag-container",
-
-            //CSS state classes
-            activeClass: "is-active",
-            hoverClass: "is-hovered",
-            dragClass: "is-drag",
-            pressClass: "is-pressed",
         };
 
-        this.defaults = Object.assign({}, _defaults, options);
+        /**
+         * Cursor states
+         * @type {{cursorHovered: string, cursorActive: string, cursorPressed: string}}
+         */
+        this.states = {
+            cursorActive: "is-active",
+            cursorHovered: "is-hovered",
+            cursorPressed: "is-pressed",
+        };
 
-        if (this.cursor) {
-            this.init();
-        }
-    }
+        /**
+         *
+         * @type {Element}
+         */
+        this.cursor = document.querySelector(this.DOM.cursor);
 
-    get cursor() {
-        return document.querySelector(this.defaults.cursor);
-    }
+        /**
+         *
+         * @type {Element}
+         */
+        this.cursorFollower = document.querySelector(this.DOM.cursorFollower);
 
-    get cursorFollower() {
-        return document.querySelector(this.defaults.cursorFollower);
-    }
-
-    get links() {
-        return document.querySelectorAll(this.defaults.link);
-    }
-
-    get dragContainers() {
-        return document.querySelectorAll(this.defaults.dragContainer);
+        /**
+         *
+         * @type {NodeListOf<Element>}
+         */
+        this.links = document.querySelectorAll(this.DOM.link);
     }
 
     init() {
         console.log("CustomCursor init()");
-        this.cursorController();
+
+        if (this.cursor != null) {
+            this.cursorController();
+        } else {
+            console.error(`${this.DOM.cursor} does not exist in the DOM!`);
+        }
     }
 
     //CURSOR
@@ -61,30 +64,20 @@ export default class CustomCursor {
         });
 
         document.addEventListener("mousedown", (ev) => {
-            this.onMouseDown(ev, this.defaults.pressClass);
+            this.onMouseDown(ev, this.states.cursorPressed);
         });
 
         document.addEventListener("mouseup", (ev) => {
-            this.onMouseUp(ev, this.defaults.pressClass);
+            this.onMouseUp(ev, this.states.cursorPressed);
         });
 
         [...this.links].forEach((link) => {
             link.addEventListener("mouseenter", (ev) => {
-                this.onMouseEnter(ev, this.defaults.activeClass);
+                this.onMouseEnter(ev, this.states.cursorActive);
             });
 
             link.addEventListener("mouseleave", (ev) => {
-                this.onMouseLeave(ev, this.defaults.activeClass);
-            });
-        });
-
-        [...this.dragContainers].forEach((dragContainer) => {
-            dragContainer.addEventListener("mouseenter", (ev) => {
-                this.onMouseEnter(ev, this.defaults.dragClass);
-            });
-
-            dragContainer.addEventListener("mouseleave", (ev) => {
-                this.onMouseLeave(ev, this.defaults.dragClass);
+                this.onMouseLeave(ev, this.states.cursorActive);
             });
         });
     }
@@ -114,7 +107,7 @@ export default class CustomCursor {
     onMouseEnter(event, stateClass) {
         this.cursor.classList.add(stateClass);
         this.cursorFollower.classList.add(stateClass);
-        event.currentTarget.classList.add(this.defaults.hoverClass);
+        event.currentTarget.classList.add(this.states.cursorHovered);
 
         gsap.to(this.cursorFollower, 0.25, {
             scale: 1.25,
@@ -130,7 +123,7 @@ export default class CustomCursor {
     onMouseLeave(event, stateClass) {
         this.cursor.classList.remove(stateClass);
         this.cursorFollower.classList.remove(stateClass);
-        event.currentTarget.classList.remove(this.defaults.hoverClass);
+        event.currentTarget.classList.remove(this.states.cursorHovered);
 
         gsap.to(this.cursorFollower, 0.25, {
             scale: 1,

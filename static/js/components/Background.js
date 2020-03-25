@@ -4,38 +4,46 @@ import gsap from "gsap";
 window.PIXI = PIXI;
 
 export default class Background {
-    constructor(options) {
-        let _defaults = {
-            //
-            canvasWidth: 1600,
-            canvasHeight: 900,
+    constructor() {
+        this.DOM = {
             canvasContainer: ".js-background",
         };
 
-        this.defaults = Object.assign({}, _defaults, options);
+        this.options = {
+            canvasWidth: 1600,
+            canvasHeight: 900,
+        };
+
+        this.canvasContainer = document.querySelector(this.DOM.canvasContainer);
 
         //PIXI stuff
         //PIXI.utils.skipHello();
 
         this.canvasWidth =
             innerWidth > 800
-                ? this.defaults.canvasWidth
-                : this.defaults.canvasWidth / 2;
+                ? this.options.canvasWidth
+                : this.options.canvasWidth / 2;
         // this.canvasWidth = window.innerWidth;
         this.canvasHeight =
             innerHeight > 800
-                ? this.defaults.canvasHeight
-                : this.defaults.canvasHeight / 2;
+                ? this.options.canvasHeight
+                : this.options.canvasHeight / 2;
         // this.canvasHeight = window.innerWidth * 0.5625;
-    }
-
-    get canvasContainer() {
-        return document.querySelector(this.defaults.canvasContainer);
     }
 
     init() {
         console.log("Background init()");
 
+        if (this.canvasContainer != null) {
+            this.initBackground();
+        } else {
+            console.error(
+                `${this.DOM.canvasContainer} does not exist in the DOM!`,
+            );
+        }
+    }
+
+    initBackground() {
         let rt = [],
             bg,
             bgs = [],
@@ -135,7 +143,7 @@ export default class Background {
         // ADD CANVAS TO CANVAS WRAPPER ELEMENT
         this.canvasContainer.appendChild(app.view);
 
-        for (var i = 0; i < 3; i++) {
+        for (let i = 0; i < 3; i++) {
             rt.push(
                 PIXI.RenderTexture.create(app.screen.width, app.screen.height),
             );
@@ -157,21 +165,21 @@ export default class Background {
         // LOAD TEXTURES //
         app.loader.add("bg", this.canvasContainer.getAttribute("data-image"));
         app.loader.add(
-            "one",
+            "displacement",
             this.canvasContainer.getAttribute("data-displacement-image"),
         );
 
         // LOADER //
         app.loader.load((loader, resources) => {
-            var tempBg = new PIXI.Sprite(resources.bg.texture);
+            let tempBg = new PIXI.Sprite(resources.bg.texture);
             tempBg.width = app.screen.width;
             tempBg.height = app.screen.height;
 
             app.renderer.render(tempBg, rt[0]);
 
-            for (var i = 0, len = containers.length; i < len; i++) {
+            for (let i = 0, len = containers.length; i < len; i++) {
                 app.stage.addChild(containers[i]);
-                brushes.push(new PIXI.Sprite(resources.one.texture));
+                brushes.push(new PIXI.Sprite(resources.displacement.texture));
                 displacementFilters.push(
                     new PIXI.filters.DisplacementFilter(brushes[i]),
                 );
@@ -194,26 +202,24 @@ export default class Background {
             app.stage.interactive = true;
 
             if (this.canvasWidth > 800) {
-                app.stage.on("pointermove", onPointerMove);
+                app.stage.on("pointermove", (ev) => {
+                    let x = ev.data.global.x;
+                    let y = ev.data.global.y;
+
+                    for (let i = 0, len = containers.length; i < len; i++) {
+                        gsap.to(displacementFilters[i].scale, {
+                            duration: 0.2,
+                            x: Math.atan(x - brushes[i].x) * 40,
+                            y: Math.atan(y - brushes[i].y) * 40,
+                            ease: "power2.out",
+                        });
+
+                        brushes[i].position = ev.data.global;
+                    }
+                });
             }
 
             app.start();
         });
-
-        function onPointerMove(event) {
-            let x = event.data.global.x;
-            let y = event.data.global.y;
-
-            for (var i = 0, len = containers.length; i < len; i++) {
-                gsap.to(displacementFilters[i].scale, {
-                    duration: 0.2,
-                    x: Math.atan(x - brushes[i].x) * 40,
-                    y: Math.atan(y - brushes[i].y) * 40,
-                    ease: "power2.out",
-                });
-
-                brushes[i].position = event.data.global;
-            }
-        }
     }
 }

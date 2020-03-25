@@ -50585,29 +50585,40 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 window.PIXI = PIXI;
 
 var Background = /*#__PURE__*/function () {
-  function Background(options) {
+  function Background() {
     _classCallCheck(this, Background);
 
-    var _defaults = {
-      //
-      canvasWidth: 1600,
-      canvasHeight: 900,
+    this.DOM = {
       canvasContainer: ".js-background"
     };
-    this.defaults = Object.assign({}, _defaults, options); //PIXI stuff
+    this.options = {
+      canvasWidth: 1600,
+      canvasHeight: 900
+    };
+    this.canvasContainer = document.querySelector(this.DOM.canvasContainer); //PIXI stuff
     //PIXI.utils.skipHello();
 
-    this.canvasWidth = innerWidth > 800 ? this.defaults.canvasWidth : this.defaults.canvasWidth / 2; // this.canvasWidth = window.innerWidth;
+    this.canvasWidth = innerWidth > 800 ? this.options.canvasWidth : this.options.canvasWidth / 2; // this.canvasWidth = window.innerWidth;
 
-    this.canvasHeight = innerHeight > 800 ? this.defaults.canvasHeight : this.defaults.canvasHeight / 2; // this.canvasHeight = window.innerWidth * 0.5625;
+    this.canvasHeight = innerHeight > 800 ? this.options.canvasHeight : this.options.canvasHeight / 2; // this.canvasHeight = window.innerWidth * 0.5625;
   }
 
   _createClass(Background, [{
     key: "init",
     value: function init() {
+      console.log("Background init()");
+
+      if (this.canvasContainer != null) {
+        this.initBackground();
+      } else {
+        console.error("".concat(this.DOM.canvasContainer, " does not exist in the DOM!"));
+      }
+    }
+  }, {
+    key: "initBackground",
+    value: function initBackground() {
       var _this = this;
 
-      console.log("Background init()");
       var rt = [],
           bg,
           bgs = [],
@@ -50649,7 +50660,7 @@ var Background = /*#__PURE__*/function () {
       containers.push(containerRed, containerGreen, containerBlue); // LOAD TEXTURES //
 
       app.loader.add("bg", this.canvasContainer.getAttribute("data-image"));
-      app.loader.add("one", this.canvasContainer.getAttribute("data-displacement-image")); // LOADER //
+      app.loader.add("displacement", this.canvasContainer.getAttribute("data-displacement-image")); // LOADER //
 
       app.loader.load(function (loader, resources) {
         var tempBg = new PIXI.Sprite(resources.bg.texture);
@@ -50657,14 +50668,15 @@ var Background = /*#__PURE__*/function () {
         tempBg.height = app.screen.height;
         app.renderer.render(tempBg, rt[0]);
 
-        for (var i = 0, len = containers.length; i < len; i++) {
-          app.stage.addChild(containers[i]);
-          brushes.push(new PIXI.Sprite(resources.one.texture));
-          displacementFilters.push(new PIXI.filters.DisplacementFilter(brushes[i]));
+        for (var _i = 0, len = containers.length; _i < len; _i++) {
+          app.stage.addChild(containers[_i]);
+          brushes.push(new PIXI.Sprite(resources.displacement.texture));
+          displacementFilters.push(new PIXI.filters.DisplacementFilter(brushes[_i]));
           bg = new PIXI.Sprite(rts[0][0]);
           bgs.push(bg);
-          containers[i].filters = [channelsContainer[i], displacementFilters[i]];
-          containers[i].addChild(bgs[i], brushes[i]);
+          containers[_i].filters = [channelsContainer[_i], displacementFilters[_i]];
+
+          containers[_i].addChild(bgs[_i], brushes[_i]);
         }
 
         brushes[0].anchor.set(0.5);
@@ -50675,32 +50687,25 @@ var Background = /*#__PURE__*/function () {
         app.stage.interactive = true;
 
         if (_this.canvasWidth > 800) {
-          app.stage.on("pointermove", onPointerMove);
+          app.stage.on("pointermove", function (ev) {
+            var x = ev.data.global.x;
+            var y = ev.data.global.y;
+
+            for (var _i2 = 0, _len = containers.length; _i2 < _len; _i2++) {
+              _gsap.default.to(displacementFilters[_i2].scale, {
+                duration: 0.2,
+                x: Math.atan(x - brushes[_i2].x) * 40,
+                y: Math.atan(y - brushes[_i2].y) * 40,
+                ease: "power2.out"
+              });
+
+              brushes[_i2].position = ev.data.global;
+            }
+          });
         }
 
         app.start();
       });
-
-      function onPointerMove(event) {
-        var x = event.data.global.x;
-        var y = event.data.global.y;
-
-        for (var i = 0, len = containers.length; i < len; i++) {
-          _gsap.default.to(displacementFilters[i].scale, {
-            duration: 0.2,
-            x: Math.atan(x - brushes[i].x) * 40,
-            y: Math.atan(y - brushes[i].y) * 40,
-            ease: "power2.out"
-          });
-
-          brushes[i].position = event.data.global;
-        }
-      }
-    }
-  }, {
-    key: "canvasContainer",
-    get: function get() {
-      return document.querySelector(this.defaults.canvasContainer);
     }
   }]);
 
@@ -50743,37 +50748,58 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
  * CustomCursor class
  */
 var CustomCursor = /*#__PURE__*/function () {
-  /**
-   *
-   * @param {object} options
-   */
-  function CustomCursor(options) {
+  function CustomCursor() {
     _classCallCheck(this, CustomCursor);
 
-    var _defaults = {
-      //CURSOR
+    /**
+     * Cursor DOM selectors
+     * @type {{cursor: string, cursorFollower: string, link: string}}
+     */
+    this.DOM = {
       cursor: ".js-cursor",
       cursorFollower: ".js-cursor-follower",
-      link: ".js-link",
-      dragContainer: ".js-drag-container",
-      //CSS state classes
-      activeClass: "is-active",
-      hoverClass: "is-hovered",
-      dragClass: "is-drag",
-      pressClass: "is-pressed"
+      link: ".js-link"
     };
-    this.defaults = Object.assign({}, _defaults, options);
+    /**
+     * Cursor states
+     * @type {{cursorHovered: string, cursorActive: string, cursorPressed: string}}
+     */
 
-    if (this.cursor) {
-      this.init();
-    }
+    this.states = {
+      cursorActive: "is-active",
+      cursorHovered: "is-hovered",
+      cursorPressed: "is-pressed"
+    };
+    /**
+     *
+     * @type {Element}
+     */
+
+    this.cursor = document.querySelector(this.DOM.cursor);
+    /**
+     *
+     * @type {Element}
+     */
+
+    this.cursorFollower = document.querySelector(this.DOM.cursorFollower);
+    /**
+     *
+     * @type {NodeListOf<Element>}
+     */
+
+    this.links = document.querySelectorAll(this.DOM.link);
   }
 
   _createClass(CustomCursor, [{
     key: "init",
     value: function init() {
       console.log("CustomCursor init()");
-      this.cursorController();
+
+      if (this.cursor != null) {
+        this.cursorController();
+      } else {
+        console.error("".concat(this.DOM.cursor, " does not exist in the DOM!"));
+      }
     } //CURSOR
 
     /**
@@ -50789,27 +50815,18 @@ var CustomCursor = /*#__PURE__*/function () {
         _this.onMouseMove(ev);
       });
       document.addEventListener("mousedown", function (ev) {
-        _this.onMouseDown(ev, _this.defaults.pressClass);
+        _this.onMouseDown(ev, _this.states.cursorPressed);
       });
       document.addEventListener("mouseup", function (ev) {
-        _this.onMouseUp(ev, _this.defaults.pressClass);
+        _this.onMouseUp(ev, _this.states.cursorPressed);
       });
 
       _toConsumableArray(this.links).forEach(function (link) {
         link.addEventListener("mouseenter", function (ev) {
-          _this.onMouseEnter(ev, _this.defaults.activeClass);
+          _this.onMouseEnter(ev, _this.states.cursorActive);
         });
         link.addEventListener("mouseleave", function (ev) {
-          _this.onMouseLeave(ev, _this.defaults.activeClass);
-        });
-      });
-
-      _toConsumableArray(this.dragContainers).forEach(function (dragContainer) {
-        dragContainer.addEventListener("mouseenter", function (ev) {
-          _this.onMouseEnter(ev, _this.defaults.dragClass);
-        });
-        dragContainer.addEventListener("mouseleave", function (ev) {
-          _this.onMouseLeave(ev, _this.defaults.dragClass);
+          _this.onMouseLeave(ev, _this.states.cursorActive);
         });
       });
     }
@@ -50843,7 +50860,7 @@ var CustomCursor = /*#__PURE__*/function () {
     value: function onMouseEnter(event, stateClass) {
       this.cursor.classList.add(stateClass);
       this.cursorFollower.classList.add(stateClass);
-      event.currentTarget.classList.add(this.defaults.hoverClass);
+      event.currentTarget.classList.add(this.states.cursorHovered);
 
       _gsap.default.to(this.cursorFollower, 0.25, {
         scale: 1.25,
@@ -50861,7 +50878,7 @@ var CustomCursor = /*#__PURE__*/function () {
     value: function onMouseLeave(event, stateClass) {
       this.cursor.classList.remove(stateClass);
       this.cursorFollower.classList.remove(stateClass);
-      event.currentTarget.classList.remove(this.defaults.hoverClass);
+      event.currentTarget.classList.remove(this.states.cursorHovered);
 
       _gsap.default.to(this.cursorFollower, 0.25, {
         scale: 1,
@@ -50902,26 +50919,6 @@ var CustomCursor = /*#__PURE__*/function () {
         ease: "power3.easeOut"
       });
     }
-  }, {
-    key: "cursor",
-    get: function get() {
-      return document.querySelector(this.defaults.cursor);
-    }
-  }, {
-    key: "cursorFollower",
-    get: function get() {
-      return document.querySelector(this.defaults.cursorFollower);
-    }
-  }, {
-    key: "links",
-    get: function get() {
-      return document.querySelectorAll(this.defaults.link);
-    }
-  }, {
-    key: "dragContainers",
-    get: function get() {
-      return document.querySelectorAll(this.defaults.dragContainer);
-    }
   }]);
 
   return CustomCursor;
@@ -50951,22 +50948,16 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
  * Loader class
  */
 var Loader = /*#__PURE__*/function () {
-  /**
-   *
-   * @param options
-   */
-  function Loader(options) {
+  function Loader() {
     var _this = this;
 
     _classCallCheck(this, Loader);
 
     /**
      *
-     * @type {{navigationSlideUp: string, navigation: string, activeClass: string, navigationScrolled: string, navigationFixed: string}}
-     * @private
+     * @type {{loader: string, background: string, stagingLogo: string, loaderWrapper: string, stagingElement: string, loaderLayer: string}}
      */
-    var _defaults = {
-      //
+    this.DOM = {
       loaderWrapper: ".js-loader-wrapper",
       loader: ".js-loader",
       background: ".js-background",
@@ -50974,6 +50965,12 @@ var Loader = /*#__PURE__*/function () {
       stagingLogo: ".js-staging-logo",
       stagingElement: ".js-staging-element"
     };
+    this.loaderWrapper = document.querySelector(this.DOM.loaderWrapper);
+    this.loader = document.querySelector(this.DOM.loader);
+    this.loaderLayers = document.querySelectorAll(this.DOM.loaderLayer);
+    this.stagingLogo = document.querySelector(this.DOM.stagingLogo);
+    this.stagingElements = document.querySelectorAll(this.DOM.stagingElement);
+    this.background = document.querySelector(this.DOM.background);
     this.loaderTl = _gsap.default.timeline({
       paused: true,
       // delay: 0.6,
@@ -50982,34 +50979,20 @@ var Loader = /*#__PURE__*/function () {
 
         _this.loaderWrapper.parentNode.removeChild(_this.loaderWrapper);
       }
-    }); //loader config
-
-    this.defaults = Object.assign({}, _defaults, options);
-
-    if (this.loader) {
-      this.init();
-      this.initLoader();
-    }
-  } //region getters
-
-  /**
-   *
-   * @returns {Element}
-   */
-
+    });
+  }
 
   _createClass(Loader, [{
     key: "init",
-    //endregion
-    //region methods
-
-    /**
-     *
-     */
     value: function init() {
       console.log("Navigation init()");
-    } //LOADER
 
+      if (this.loaderWrapper != null) {
+        this.initLoader();
+      } else {
+        console.error("".concat(this.DOM.loaderWrapper, " does not exist in the DOM!"));
+      }
+    }
     /**
      *
      */
@@ -51066,6 +51049,7 @@ var Loader = /*#__PURE__*/function () {
         duration: 0.2,
         autoAlpha: 0
       });
+      this.playTimeline();
     }
   }, {
     key: "playTimeline",
@@ -51073,36 +51057,6 @@ var Loader = /*#__PURE__*/function () {
       this.loaderTl.play();
     } //endregion
 
-  }, {
-    key: "loaderWrapper",
-    get: function get() {
-      return document.querySelector(this.defaults.loaderWrapper);
-    }
-  }, {
-    key: "loader",
-    get: function get() {
-      return document.querySelector(this.defaults.loader);
-    }
-  }, {
-    key: "loaderLayers",
-    get: function get() {
-      return document.querySelectorAll(this.defaults.loaderLayer);
-    }
-  }, {
-    key: "stagingLogo",
-    get: function get() {
-      return document.querySelector(this.defaults.stagingLogo);
-    }
-  }, {
-    key: "stagingElements",
-    get: function get() {
-      return document.querySelectorAll(this.defaults.stagingElement);
-    }
-  }, {
-    key: "background",
-    get: function get() {
-      return document.querySelector(this.defaults.background);
-    }
   }]);
 
   return Loader;
@@ -51266,7 +51220,7 @@ var NavigationController = /*#__PURE__*/function () {
     value: function init() {
       console.log("Navigation init()");
 
-      if (this.navigation !== null) {
+      if (this.navigation != null) {
         this.navigationController();
       } else {
         console.error("".concat(this.DOM.navigation, " does not exist in the DOM!"));
@@ -51395,10 +51349,11 @@ function ready(callbackFunc) {
 
 ready(function () {
   var cursor = new _CustomCursor.default();
+  cursor.init();
   var mobileMotion = new _MobileMotion.default();
   mobileMotion.init();
   var loader = new _Loader.default();
-  loader.playTimeline();
+  loader.init();
   var background = new _Background.default();
   background.init();
   var navigation = new _NavigationController.default();
