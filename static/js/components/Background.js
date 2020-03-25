@@ -15,7 +15,7 @@ export default class Background {
         this.defaults = Object.assign({}, _defaults, options);
 
         //PIXI stuff
-        PIXI.utils.skipHello();
+        //PIXI.utils.skipHello();
 
         this.canvasWidth =
             innerWidth > 800

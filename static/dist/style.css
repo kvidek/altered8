@@ -511,6 +511,9 @@ a {
 .o-page {
   position: relative; }
 
+.o-section--dummy {
+  height: 300vh; }
+
 /**
  * Components
  */
