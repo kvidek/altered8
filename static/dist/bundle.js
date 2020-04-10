@@ -51161,20 +51161,16 @@ var NavigationController = /*#__PURE__*/function () {
 
     /**
      * Navigation DOM selectors
-     * @type {{navigation: string}}
+     * Navigation DOM state CSS classes
+     * @type {{navigation: string, states: {navigationSlideUp: string, navigationScrolled: string, navigationFixed: string}}}
      */
     this.DOM = {
-      navigation: ".js-navigation-wrapper"
-    };
-    /**
-     * Navigation state CSS classes
-     * @type {{navigationSlideUp: string, navigationScrolled: string, navigationFixed: string}}
-     */
-
-    this.states = {
-      navigationScrolled: "has-scrolled",
-      navigationFixed: "is-fixed",
-      navigationSlideUp: "slide-up"
+      navigation: ".js-navigation-wrapper",
+      states: {
+        navigationScrolled: "has-scrolled",
+        navigationFixed: "is-fixed",
+        navigationSlideUp: "slide-up"
+      }
     };
     /**
      * flag, state variable for scrolling event
@@ -51220,7 +51216,7 @@ var NavigationController = /*#__PURE__*/function () {
     value: function init() {
       console.log("Navigation init()");
 
-      if (this.navigation != null) {
+      if (this.navigation !== null) {
         this.navigationController();
       } else {
         console.error("".concat(this.DOM.navigation, " does not exist in the DOM!"));
@@ -51274,25 +51270,43 @@ var NavigationController = /*#__PURE__*/function () {
     key: "changeNavigationState",
     value: function changeNavigationState(currentTop) {
       if (currentTop > this.scrollNavigationOffset) {
-        this.navigation.classList.add(this.states.navigationScrolled);
+        this.navigation.classList.add(this.DOM.states.navigationScrolled);
       } else {
-        this.navigation.classList.remove(this.states.navigationScrolled);
+        this.navigation.classList.remove(this.DOM.states.navigationScrolled);
       }
 
       if (this.previousTop >= currentTop) {
-        //SCROLLING UP
-        if (currentTop < this.scrollNavigationOffset) {
-          this.navigation.classList.remove(this.states.navigationSlideUp);
-        } else if (this.previousTop - currentTop > this.scrollDelta) {
-          this.navigation.classList.remove(this.states.navigationSlideUp);
-        }
+        this.scrollingUp(currentTop);
       } else {
-        //SCROLLING DOWN
-        if (currentTop > this.scrollNavigationOffset + this.scrollOffset) {
-          this.navigation.classList.add(this.states.navigationSlideUp);
-        } else if (currentTop > this.scrollNavigationOffset) {
-          this.navigation.classList.remove(this.states.navigationSlideUp);
-        }
+        this.scrollingDown(currentTop);
+      }
+    }
+    /**
+     *
+     * @param currentTop
+     */
+
+  }, {
+    key: "scrollingUp",
+    value: function scrollingUp(currentTop) {
+      if (currentTop < this.scrollNavigationOffset) {
+        this.navigation.classList.remove(this.DOM.states.navigationSlideUp);
+      } else if (this.previousTop - currentTop > this.scrollDelta) {
+        this.navigation.classList.remove(this.DOM.states.navigationSlideUp);
+      }
+    }
+    /**
+     *
+     * @param currentTop
+     */
+
+  }, {
+    key: "scrollingDown",
+    value: function scrollingDown(currentTop) {
+      if (currentTop > this.scrollNavigationOffset + this.scrollOffset) {
+        this.navigation.classList.add(this.DOM.states.navigationSlideUp);
+      } else if (currentTop > this.scrollNavigationOffset) {
+        this.navigation.classList.remove(this.DOM.states.navigationSlideUp);
       }
     } //endregion
 
