@@ -60,7 +60,7 @@
         "vinyl-source-stream": "^2.0.0"
     },
     "dependencies": {
-        "gsap": "^3.2.4",
+        "gsap": "^3.6.0",
         "mailgo": "^0.8.5",
         "pixi.js": "^5.2.1",
         "poly-fluid-sizing": "^1.1.0"
